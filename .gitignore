@@ -1,0 +1,9 @@
+*.log
+.DS_Store
+**/.idea
+**/__pycache__
+*.pyc
+ksp_scraper/db_config.py
+smtp_config.py
+celerybeat-schedule.db
+celery_config.py

@@ -1,0 +1,7 @@
+<div class="ims">
+<img alt="Sold Out" src="//ksp.co.il/img/soldout.jpg" style="float:left;width:200px" title="Sold Out"/>
+    לקוח/ה יקר/ה, <br/><br/>
+<b style="color:red;font-size:20px;">מוצר זה אזל במלאי ! </b><br/><br/>
+    סנכרון והסרת הקישור לאתרנו מאתרים חיצונים כגון זאפ הינו באופן אוטומטי על ידי חברות אלו.<br/><br/>
+    אנו מאחלים לכם המשך קניה מוצלחת.<br/><br/>
+<a href="//ksp.co.il" style="color:blue;font-size:15px;">קי.אס.פי. מחשבים</a></div>

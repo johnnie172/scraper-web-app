@@ -1,0 +1,10 @@
+beautifulsoup4
+lxml
+html5lib
+requests
+requests_mock
+psycopg2
+schedule
+celery
+Flask
+Flask-WTF

@@ -1,0 +1,32 @@
+
+            <div class="title-text">
+                <span class="span-text-html">עכבר גיימרים Corsair HARPOON RGB PRO FPS/MOBA</span>
+            </div>
+            <!--div class="title-img">
+                <img src="https://ksp.co.il/images/brands/3829.png" title="Corsair Gaming" alt="Corsair Gaming">
+            </div-->
+
+        </div>
+
+                            <td>
+                                <div class="div-options-prices">
+                                <div class="prices-with-sign-shekel lh8 prices no-old-price "  style="display: inline-block;">
+                                                                            <span class="span-new-price-get-item">165 <span class="sign-shekel-smaller">₪</span></span>
+                                                                    </div>
+                                                                <div class="line-or" style="display: inline-block;">
+                                    <div class="line-separate"><span class="span-in-separate">או</span></div>
+                                </div>
+
+                                <div class="prices prices-payments" style="display: inline-block;">
+                                    <span style="font-size: 15px;"><div class="price-per-month prices-with-sign-shekel"><span style="font-weight: bold;font-size: 15px;">14 ₪</span></div> לחודש<br>ב-12 תשלומים</span><br>
+                                    <span>פריסת תשלומים</span>
+                                    <div class='open-calc-payments cspointer' data-uinsql="70642" data-price="165" data-max_without_interset="12" data-max_with_interset="12" title="לחצו לפתיחת מחשבון תשלומים">
+									   <span class="or-icon fs15">
+											<i class="fa fa-question-circle fa-circle-bg-12px" aria-hidden="true" style="
+												color: #d7d7d7;
+												position: relative;
+											"></i>
+										</span>
+                                    </div>
+                                </div>
+                                
