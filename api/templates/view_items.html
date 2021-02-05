@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>My items</title>
+</head>
+<body>
+    <div id="items">
+
+    </div>
+    <script type="text/javascript">        
+
+        function showItems(data) {
+        	var itemsDiv = document.getElementById('items');
+        	var itemsList = data.items;
+
+        	for (var itemIndex = itemsList.length - 1; itemIndex >= 0; itemIndex--) {
+        		itemsDiv.innerHTML += `<p> ${itemsList[itemIndex]} </p>`
+        	}
+        }
+
+        function getItems() {
+        	fetch('/api/items')
+        		.then(response => response.json())
+        		.then(showItems)
+        }
+
+        getItems();
+
+    </script>
+</body>
+</html>
