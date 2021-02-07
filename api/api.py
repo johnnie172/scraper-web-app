@@ -5,7 +5,8 @@ from flask import g as flask_g
 import logging
 import psycopg2
 
-sys.path.insert(0, '/Users/Johnnie172/PycharmProjects/ksp-scraper-api/ksp_scraper')
+#todo path change
+sys.path.insert(0, '/Users/Johnnie172/PycharmProjects/scraper-web-app/ksp_scraper')
 import db_connection
 from UserUtilities import UserUtilities
 
@@ -99,17 +100,8 @@ def get_items():
     logger.debug(f'user id: {user_id}')
     items = db_queries.select_all_user_items(user_id)
     logger.debug(items)
-    # todo normal way to convert decimal/ to understand json and decimals
-    items_witout_decimal = []
-    for item in items:
-        item = [x for x in item]
-        item[3] = int(item[3])
-        item[7] = int(item[7])
-        logger.debug(item)
 
-        items_witout_decimal.append(item)
-
-    return jsonify(items=items_witout_decimal), 200
+    return jsonify(items), 200
 
 
 @app.route('/item-alert', methods=['POST'])
