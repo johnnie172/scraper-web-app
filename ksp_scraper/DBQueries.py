@@ -1,6 +1,6 @@
 from DataBase import DataBase
 import psycopg2
-from psycopg2.extras import DictCursor
+from psycopg2.extras import DictCursor, RealDictCursor
 from psycopg2.extras import NamedTupleCursor
 from psycopg2.errors import UniqueViolation
 import logging
@@ -245,6 +245,7 @@ class DBQueries:
             logger.debug(f'Query is: {query}.')
             records = cur.fetchall()
             logger.info(f"{cur.rowcount} rows fetched.")
+
         return records
 
     def check_users_for_out_of_stock_item(self, item_id):
@@ -257,6 +258,7 @@ class DBQueries:
             cur.execute(query, vars)
             records = cur.fetchall()
             logger.info(f"{cur.rowcount} rows fetched.")
+
         return records
 
     def select_emails_to_notify(self, users_id_list):
@@ -268,6 +270,7 @@ class DBQueries:
             cur.execute(query, (tuple(users_id_list),))
             records = cur.fetchall()
             logger.info(f"{cur.rowcount} rows fetched.")
+
         return records
 
     def select_emails_for_out_of_stock_items(self, items_id_list):
@@ -279,24 +282,26 @@ class DBQueries:
                     WHERE i.id IN %s AND u.email IS NOT null
                     GROUP BY i.title'''
         self.db.get_connection()
-        with self.db.conn.cursor(cursor_factory = psycopg2.extras.NamedTupleCursor) as cur:
+        with self.db.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor) as cur:
             cur.execute(query, (tuple(items_id_list),))
             logger.debug(f'Query is: {query}.')
             records = cur.fetchall()
             logger.info(f"{cur.rowcount} rows fetched.")
+
         return records
 
     def select_all_user_items(self, user_id):
-        """Run SELECT query to get all the user items by user_id."""
-        #todo needs to get all items from items table after getting all items id ny user id
+        """Run SELECT query to get all the user items by user_id, returning list of dict objects."""
+        # todo needs to get all items from items table after getting all items id ny user id
         query = '''SELECT * FROM items AS i
                     LEFT JOIN users_items AS ui ON i.id = ui.item_id
                     WHERE ui.user_id = %s'''
         vars = (user_id,)
         self.db.get_connection()
-        with self.db.conn.cursor() as cur:
+        with self.db.conn.cursor(cursor_factory=RealDictCursor) as cur:
             logger.debug(f'Query is: {query}.')
             cur.execute(query, vars)
             records = cur.fetchall()
             logger.info(f"{cur.rowcount} rows fetched.")
+
         return records
