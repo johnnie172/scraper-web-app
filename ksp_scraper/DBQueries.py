@@ -176,6 +176,7 @@ class DBQueries:
         self._insert(delete_command, vars)
         logger.debug(f'Query is: {delete_command}, the vars are{vars}.')
 
+
     def select_all_uin(self):
         """Run SELECT all rows of in stock items from items to get a dict of id's and uin's."""
         query = "SELECT id, uin FROM items WHERE in_stock = true"

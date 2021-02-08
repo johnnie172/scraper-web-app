@@ -100,6 +100,9 @@ def get_items():
     logger.debug(f'user id: {user_id}')
     items = db_queries.select_all_user_items(user_id)
     logger.debug(items)
+    for item in items:
+        item['Delete'] = f'/delete-item/{item["id"]}'
+        item['Change'] = f'/change-item/{item["id"]}'
 
     return jsonify(items), 200
 
@@ -112,20 +115,38 @@ def add_new_item():
     return jsonify(items=[None]), 201
 
 
-@app.route('/item-alert', methods=['DELETE'])
+@app.route('/delete-item/<int:item_id>')
 @require_user
-def delete_item():
+def delete_item(item_id):
     user_id = flask_g.user_id
-    # delete item from users items table
+    #todo this
+    db_queries.delete_user_item(user_id, item_id)
     return jsonify(data='Item deleted'), 200
 
 
-@app.route('/item-alert', methods=['PUT'])
+@app.route('/change-item/<int:item_id>')
 @require_user
-def change_target_price():
+def change_item(item_id):
     user_id = flask_g.user_id
-    # changing target price for user item
-    return jsonify(items=[None]), 201
+
+    return jsonify(data='Item deleted'), 200
+
+
+# routes with DELETE PUT
+# @app.route('/item-alert', methods=['DELETE'])
+# @require_user
+# def delete_item():
+#     user_id = flask_g.user_id
+#     # delete item from users items table
+#     return jsonify(data='Item deleted'), 200
+#
+#
+# @app.route('/item-alert', methods=['PUT'])
+# @require_user
+# def change_target_price():
+#     user_id = flask_g.user_id
+#     # changing target price for user item
+#     return jsonify(items=[None]), 201
 
 
 @app.route('/items', methods=['GET'])
