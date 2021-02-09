@@ -1,4 +1,6 @@
 import sys
+import os
+import inspect
 from functools import wraps
 from flask import Flask, jsonify, request, render_template, make_response, redirect
 from flask import g as flask_g
@@ -6,9 +8,13 @@ import logging
 import psycopg2
 
 #todo path change
-sys.path.insert(0, '/Users/Johnnie172/PycharmProjects/scraper-web-app/ksp_scraper')
-import db_connection
-from UserUtilities import UserUtilities
+# sys.path.insert(0, '/Users/Johnnie172/PycharmProjects/scraper-web-app/ksp_scraper')
+
+currentdir = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
+parentdir = os.path.dirname(currentdir)
+sys.path.insert(0,parentdir)
+from ksp_scraper import db_connection
+from ksp_scraper.UserUtilities import UserUtilities
 
 logging.basicConfig(filename='flask.log', level=10
                     , format='%(asctime)s: %(module)s: %(funcName)s: %(levelname)s: %(message)s')
