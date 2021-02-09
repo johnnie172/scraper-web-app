@@ -111,6 +111,10 @@ def get_items():
 @require_user
 def add_new_item():
     user_id = flask_g.user_id
+    item_url = request.form.get("item_url")
+    target_price = request.form.get("target_price")
+    #todo this, no function add new item.
+
     # ading new item for users items table
     return jsonify(items=[None]), 201
 
@@ -119,9 +123,10 @@ def add_new_item():
 @require_user
 def delete_item(item_id):
     user_id = flask_g.user_id
-    #todo this
-    db_queries.delete_user_item(user_id, item_id)
-    return jsonify(data='Item deleted'), 200
+    #todo check if item deleted
+    if db_queries.delete_user_item(user_id, item_id):
+        return jsonify(data='Item deleted'), 200
+    return jsonify(items=['Error']), 401
 
 
 @app.route('/change-item/<int:item_id>')
