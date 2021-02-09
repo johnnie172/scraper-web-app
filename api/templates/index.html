@@ -2,15 +2,13 @@
 
 {% block content %}
 
-    <h1>Sign Up</h1>
-    <form action="/sign-up" method="post">
-      <div class="imgcontainer">
-        <img src="img_avatar2.png" alt="Avatar" class="avatar">
-      </div>
 
+    <h1>Sign Up</h1>
+
+    <form action="/sign-up" method="post">
       <div class="container">
         <label for="email"><b>email</b></label>
-        <input type="text" placeholder="Enter Username" name="email" required>
+        <input type="text" placeholder="Enter Email" name="email" required>
 
         <label for="password"><b>Password</b></label>
         <input type="password" placeholder="Enter Password" name="password" required>
@@ -19,9 +17,9 @@
         <input type="password" placeholder="Enter Password Again" name="password2" required>
 
         <button type="submit">Sign Up</button>
-        <label>
-          <input type="checkbox" checked="checked" name="remember"> Remember me
-        </label>
+<!--           <label class="checkbox">
+              <input type="checkbox" value="remember-me" id="remember_me"> Remember me
+          </label> -->
       </div>
 
       <div class="container" style="background-color:#f1f1f1">
@@ -30,33 +28,67 @@
 
 
     <h1>Sign In</h1>
-    <form action="/sign-in" method="post">
-      <div class="imgcontainer">
-        <img src="img_avatar2.png" alt="Avatar" class="avatar">
-      </div>
 
+    <form action="/sign-in" method="post">
       <div class="container">
         <label for="email"><b>email</b></label>
-        <input type="text" placeholder="Enter Username" name="email" required>
+        <input type="text" placeholder="Enter Email" name="email" required>
 
         <label for="password"><b>Password</b></label>
         <input type="password" placeholder="Enter Password" name="password" required>
 
         <button type="submit">Login</button>
-        <label>
-          <input type="checkbox" checked="checked" name="remember"> Remember me
-        </label>
+<!--           <label class="checkbox">
+              <input type="checkbox" value="remember-me" id="remember_me"> Remember me
+          </label>   -->
       </div>
-
-<!--      <div class="container" style="background-color:#f1f1f1">-->
-<!--        <button type="button" class="cancelbtn">Cancel</button>-->
-<!--        <span class="psw">Forgot <a href="#">password?</a></span>-->
-<!--      </div>-->
     </form>
 
-    <form method="get" action="/log-out">
-      <button type="submit" class="logoutbtn">Log Out</button>
-    </form>
+    <script type="text/javascript">
+      //Creating form that logs out user.
+      function LogoutButton() {
+
+      var inputButton = document.createElement("button"); 
+      inputButton.setAttribute("type", "submit"); 
+      inputButton.setAttribute("class", "logoutbtn");
+      inputButton.setAttribute("id", "logoutbtn")
+
+      var form = document.createElement("form"); 
+      form.setAttribute("method", "get"); 
+      form.setAttribute("action", "/log-out"); 
+
+      form.appendChild(inputButton);
+      document.getElementsByTagName("body")[0].appendChild(form); 
+      document.querySelector('#logoutbtn').innerHTML = 'Log Out';
+      document.querySelector('#logoutbtn').innerText = 'Log Out';
+      document.querySelector('#logoutbtn').textContent = 'Log Out';
+      }
+
+      function getCookie(cname) {
+        var name = cname + "=";
+        var decodedCookie = decodeURIComponent(document.cookie);
+        var ca = decodedCookie.split(';');
+        for(var i = 0; i <ca.length; i++) {
+          var c = ca[i];
+          while (c.charAt(0) == ' ') {
+            c = c.substring(1);
+          }
+          if (c.indexOf(name) == 0) {
+            return c.substring(name.length, c.length);
+          }
+        }
+        return "";
+      }
+
+      function checkCookie() {
+        var userId = getCookie("user_id");
+        if (userId != "") {
+          LogoutButton();
+        }
+      }
+      
+      checkCookie()
+    </script>
 
 
 {% endblock content %}
