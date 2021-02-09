@@ -5,6 +5,7 @@ import logging
 import hashlib
 import binascii
 import os
+import re
 
 
 class UserUtilities:
@@ -66,8 +67,9 @@ class UserUtilities:
 
         user_id = None
 
-        if password == password2:
+        if password == password2 and self.check_valid_email(email):
             hashed_password = self.hash_password(password)
+
             user_id = self.db_queries.add_user(email, hashed_password)
 
         else:
@@ -178,3 +180,11 @@ class UserUtilities:
         pwdhash = binascii.hexlify(pwdhash).decode('ascii')
         self.logger.debug('Verifying password.')
         return pwdhash == stored_password
+
+    def check_valid_email(self, email):
+        """Function that validate Email address."""
+        regex = "([a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+)"
+        if (re.search(regex, email)):
+            return True
+
+        return False
