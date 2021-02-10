@@ -118,30 +118,40 @@ def get_items():
 def add_new_item():
     user_id = flask_g.user_id
     item_url = request.form.get("item_url")
-    target_price = request.form.get("target_price")
-    #todo this, no function add new item.
-
-    # ading new item for users items table
-    return jsonify(items=[None]), 201
+    user_utilities.scrap_for_new_item(user_id, item_url)
+    return redirect('/items', 201)
 
 
 @app.route('/delete-item/<int:item_id>')
 @require_user
 def delete_item(item_id):
     user_id = flask_g.user_id
-    #todo check if item deleted
-    if db_queries.delete_user_item(user_id, item_id):
+
+    deleted_item = db_queries.delete_user_item(user_id, item_id)
+    logger.debug(f'Delete is: {deleted_item}')
+
+    if deleted_item:
         return jsonify(data='Item deleted'), 200
     return jsonify(items=['Error']), 401
 
 
-@app.route('/change-item/<int:item_id>')
+@app.route('/change-item/<int:item_id>', methods=['GET'])
+@require_user
+def change_item(item_id):
+    render_template()
+
+
+@app.route('/change-item/<int:item_id>', methods=['POST'])
 @require_user
 def change_item(item_id):
     user_id = flask_g.user_id
 
-    return jsonify(data='Item deleted'), 200
+    Changed_item = None
+    logger.debug(f'Changed is: {Changed_item}')
 
+    if Changed_item:
+        return jsonify(data='Item changed'), 200
+    return jsonify(items=['Error']), 401
 
 # routes with DELETE PUT
 # @app.route('/item-alert', methods=['DELETE'])

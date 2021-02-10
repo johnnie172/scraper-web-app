@@ -1,9 +1,9 @@
+{% extends "base.html" %}
+
+
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>My items</title>
-</head>
+{% block content %}
 <body>
     <div id="items">
 
@@ -93,15 +93,13 @@
 
 
     </script>
+
         <h1>Add Item</h1>
     <form action="/item-alert" method="post">
 
       <div class="container">
         <label for="item_url"><b>Item url</b></label>
         <input type="text" placeholder="Enter URL" name="item_url" required>
-
-        <label for="target_price"><b>Password</b></label>
-        <input type="number" placeholder="Enter target price" name="target_price" required>
 
         <button type="submit">Add item</button>
 
@@ -110,5 +108,7 @@
       <div class="container" style="background-color:#f1f1f1">
       </div>
     </form>
+
 </body>
+{% endblock content %}
 </html>

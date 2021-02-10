@@ -73,8 +73,14 @@ class DBQueries:
         self.db.get_connection()
         with self.db.conn.cursor() as cur:
             cur.execute(query, vars)
+            count = cur.rowcount
             self.db.conn.commit()
             logger.info(f"{cur.rowcount} rows affected.")
+            if count:
+                return count
+            else:
+                return False
+
 
     def _insert_and_return_id(self, query, vars, select_id_command):
         """Run a SQL query to insert rows in table and return id."""
@@ -158,6 +164,18 @@ class DBQueries:
         self._insert(insert_command, vars)
         logger.debug(f'Query is: {insert_command}, the vars are{vars}.')
 
+    def delete_user_item(self, user_id, item_id):
+        """Run an DELETE query to delete user item."""
+        # getting 2 values(user_id, item_id) and forming them into a tuple.
+        vars = (user_id, item_id)
+        delete_command = "DELETE FROM users_items WHERE user_id = %s AND item_id = %s"
+        count = self._delete(delete_command, vars)
+        logger.debug(f'Query is: {delete_command}, the vars are{vars}.')
+        if count:
+            return count
+        else:
+            return False
+
     def change_target_price(self, target_price, user_id, item_id):
         """Run an UPDATE query to update user item target price."""
         # getting 3 values(user_id, item_id, target_price) and forming them into a tuple.
@@ -167,15 +185,6 @@ class DBQueries:
                             WHERE user_id = %s AND item_id = %s'''
         self._insert(update_command, vars)
         logger.debug(f'Query is: {update_command}, the vars are{vars}.')
-
-    def delete_user_item(self, user_id, item_id):
-        """Run an DELETE query to delete user item."""
-        # getting 2 values(user_id, item_id) and forming them into a tuple.
-        vars = (user_id, item_id)
-        delete_command = "DELETE FROM users_items WHERE user_id = %s AND item_id = %s"
-        self._insert(delete_command, vars)
-        logger.debug(f'Query is: {delete_command}, the vars are{vars}.')
-
 
     def select_all_uin(self):
         """Run SELECT all rows of in stock items from items to get a dict of id's and uin's."""
@@ -232,6 +241,22 @@ class DBQueries:
             self.db.conn.commit()
             logger.info(f"{cur.rowcount} rows affected.")
 
+    def select_all_user_items(self, user_id):
+        """Run SELECT query to get all the user items by user_id, returning list of dict objects."""
+        # todo needs to get all items from items table after getting all items id ny user id
+        query = '''SELECT * FROM items AS i
+                    LEFT JOIN users_items AS ui ON i.id = ui.item_id
+                    WHERE ui.user_id = %s'''
+        vars = (user_id,)
+        self.db.get_connection()
+        with self.db.conn.cursor(cursor_factory=RealDictCursor) as cur:
+            logger.debug(f'Query is: {query}.')
+            cur.execute(query, vars)
+            records = cur.fetchall()
+            logger.info(f"{cur.rowcount} rows fetched.")
+
+        return records
+
     def check_target_prices(self, item_id_list):
         """Run select query for checking if target price is reached, returns user_id, item_id for those who met
          the conditions."""
@@ -286,22 +311,6 @@ class DBQueries:
         with self.db.conn.cursor(cursor_factory=psycopg2.extras.NamedTupleCursor) as cur:
             cur.execute(query, (tuple(items_id_list),))
             logger.debug(f'Query is: {query}.')
-            records = cur.fetchall()
-            logger.info(f"{cur.rowcount} rows fetched.")
-
-        return records
-
-    def select_all_user_items(self, user_id):
-        """Run SELECT query to get all the user items by user_id, returning list of dict objects."""
-        # todo needs to get all items from items table after getting all items id ny user id
-        query = '''SELECT * FROM items AS i
-                    LEFT JOIN users_items AS ui ON i.id = ui.item_id
-                    WHERE ui.user_id = %s'''
-        vars = (user_id,)
-        self.db.get_connection()
-        with self.db.conn.cursor(cursor_factory=RealDictCursor) as cur:
-            logger.debug(f'Query is: {query}.')
-            cur.execute(query, vars)
             records = cur.fetchall()
             logger.info(f"{cur.rowcount} rows fetched.")
 

@@ -1,10 +1,114 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Title</title>
+	<div class="topnav">
+	    <a class="active" href="/">Home</a>
+	    {% if (user_id) %}
+	    <a href="userRegistry"> Register </a>
+	    <div class="login-container">
+	        <form method="POST" action="login">
+	            <input type="text" placeholder="Email" name="email">
+	            <input type="password" placeholder="Password" name="password">
+	            <button type="submit">Login</button>
+	        </form>
+
+
+
+	 </div>
+	    {% else %}
+
+	    {% endif %}
+
+	</div>
 </head>
 <body>
+		<script type="text/javascript">
+	  //Creating form that logs out user.
+	  function LogoutButton() {
+
+	  var inputButton = document.createElement("button"); 
+	  inputButton.setAttribute("type", "submit"); 
+	  inputButton.setAttribute("class", "logoutbtn");
+	  inputButton.setAttribute("id", "logoutbtn")
+
+	  var form = document.createElement("form"); 
+	  form.setAttribute("method", "get"); 
+	  form.setAttribute("action", "/log-out"); 
+
+	  form.appendChild(inputButton);
+	  document.getElementsByTagName("body")[0].appendChild(form); 
+	  document.querySelector('#logoutbtn').innerHTML = 'Log Out';
+	  document.querySelector('#logoutbtn').innerText = 'Log Out';
+	  document.querySelector('#logoutbtn').textContent = 'Log Out';
+	  }
+
+	  function LogInForm() {
+
+	  var inputButton = document.createElement("button"); 
+	  inputButton.setAttribute("type", "submit"); 
+	  inputButton.setAttribute("class", "loginbtn");
+	  inputButton.setAttribute("id", "loginbtn");
+
+      var labelPassword = document.createElement('label');
+      labelPassword.setAttribute("for", "password");
+
+      var inputPassword = document.createElement('input');
+      inputPassword.setAttribute("type", "password");
+      inputPassword.setAttribute("placeholder", "Enter Password");
+      inputPassword.setAttribute("name", "password");
+      inputPassword.setAttribute("required", 'true');
+
+      var inputEmail = document.createElement('input');
+      inputEmail.setAttribute("for", "email");
+      inputEmail.setAttribute("type", "text");
+      inputEmail.setAttribute("placeholder", "Enter Email");
+      inputEmail.setAttribute("name", "email");
+
+
+	  var form = document.createElement("form"); 
+	  form.setAttribute("action", "/sign-in"); 
+	  form.setAttribute("method", "POST"); 
+	  form.appendChild(inputEmail);
+	  form.appendChild(labelPassword);
+	  form.appendChild(inputPassword);
+	  
+	  
+	  form.appendChild(inputButton);
+
+	  document.getElementsByTagName("body")[0].appendChild(form); 
+	  document.querySelector('#loginbtn').innerHTML = 'Log in';
+	  document.querySelector('#loginbtn').innerText = 'Log in';
+	  document.querySelector('#loginbtn').textContent = 'Log in';
+	  }
+
+	  function getCookie(cname) {
+	    var name = cname + "=";
+	    var decodedCookie = decodeURIComponent(document.cookie);
+	    var ca = decodedCookie.split(';');
+	    for(var i = 0; i <ca.length; i++) {
+	      var c = ca[i];
+	      while (c.charAt(0) == ' ') {
+	        c = c.substring(1);
+	      }
+	      if (c.indexOf(name) == 0) {
+	        return c.substring(name.length, c.length);
+	      }
+	    }
+	    return "";
+	  }
+
+	  function checkCookie() {
+	    var userId = getCookie("user_id");
+	    if (userId != "") {
+	      LogoutButton();
+	    } else{
+	    	LogInForm();
+	    }
+	  }
+	  
+	  checkCookie()
+	</script>
     {% block content %}{% endblock content %}
 </body>
+
 </html>

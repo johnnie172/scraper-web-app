@@ -1,6 +1,7 @@
 import user_input_utilities
 import consts
 import email_utilities
+import orchestrator
 import logging
 import hashlib
 import binascii
@@ -87,10 +88,21 @@ class UserUtilities:
     def user_log_out(self):
         pass
 
-    def add_new_user_item(self, user_id, item_id, target_price):
-        """Adding new user item."""
-        self.logger.debug(f'user_id: {user_id}, item_id: {item_id}, target_price: {target_price}.')
-        self.db_queries.add_user_item(user_id, item_id, target_price)
+    def scrap_for_new_item(self,user_id, item_url):
+        """Scraping for new item by url, adding it to items table(returning id),
+        adding it to prices table,
+        adding it to users items table with target of 0."""
+        new_item_dict = orchestrator.get_new_item(item_url)
+        item_price = new_item_dict.get("item_price")
+        item_title = new_item_dict.get("item_title")
+        item_uin = new_item_dict.get("item_uin")
+        lowest= new_item_dict.get("lowest")
+
+        item_id = self.db_queries.add_item(item_title, item_uin, lowest)
+        new_item_dict['item_id'] = item_id
+
+        self.db_queries.add_price(item_id, item_price)
+        self.db_queries.add_user_item(user_id, item_id, target_price=0)
 
     def delete_user_item(self,user_id,item_id):
         """Delete user item."""

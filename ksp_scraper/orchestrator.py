@@ -58,3 +58,46 @@ def out_of_stock_manger(db_queries, user_utilities, out_of_stock_items):
         item_title = record.title
         emails_to_send = record.emails
         user_utilities.notify_out_of_stock(emails_to_send, item_title)
+
+#todo change this
+def get_items_in_range():
+    new_items = []
+    for item_uin in range(10000,12000):
+        print(item_uin)
+        item_uin = str(item_uin)
+        text = request_utilities.get_text_from_url(consts.URL_TO_ADD_UIN + item_uin)
+        try:
+            title_and_price = data_parser.get_title_and_price(text)
+
+            if title_and_price:
+                logger.debug(f'Title and price are: {title_and_price}.')
+                price = data_parser.change_price_from_str_to_decimal(title_and_price[1])
+                item_title = title_and_price[0]
+                new_items.append((item_title, item_uin, price))
+        except:
+            pass
+
+def get_new_item(item_url):
+
+    item_uin = data_parser.parse_uin_from_url(item_url)
+    text = request_utilities.get_text_from_url(consts.URL_TO_ADD_UIN + item_uin)
+
+    try:
+        title_and_price = data_parser.get_title_and_price(text)
+
+        if title_and_price:
+            logger.debug(f'Title and price are: {title_and_price}.')
+            item_price = data_parser.change_price_from_str_to_decimal(title_and_price[1])
+            item_title = title_and_price[0]
+
+            return {
+                "item_price": item_price,
+                "item_title": item_title,
+                "item_uin": item_uin,
+                "lowest": item_price,
+                "item_id": None
+            }
+        else:
+            return False
+    except:
+        pass
