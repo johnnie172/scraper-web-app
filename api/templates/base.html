@@ -24,7 +24,7 @@
 <body>
 		<script type="text/javascript">
 	  //Creating form that logs out user.
-	  function LogoutButton() {
+	  function AddLogoutButton() {
 
 	  var inputButton = document.createElement("button"); 
 	  inputButton.setAttribute("type", "submit"); 
@@ -81,6 +81,17 @@
 	  document.querySelector('#loginbtn').textContent = 'Log in';
 	  }
 
+	  function AddItemsButton() {
+
+	  	var itemsButton = document.createElement("button");
+	  	itemsButton.setAttribute("onclick", "window.location.href='/items'"); 
+	  	itemsButton.setAttribute("id", "itemsbtn");
+	  	document.getElementsByTagName("body")[0].appendChild(itemsButton);
+	  document.querySelector('#itemsbtn').innerHTML = 'View Items';
+	  document.querySelector('#itemsbtn').innerText = 'View Items';
+	  document.querySelector('#itemsbtn').textContent = 'View Items';
+	  }
+
 	  function getCookie(cname) {
 	    var name = cname + "=";
 	    var decodedCookie = decodeURIComponent(document.cookie);
@@ -100,7 +111,12 @@
 	  function checkCookie() {
 	    var userId = getCookie("user_id");
 	    if (userId != "") {
-	      LogoutButton();
+	      AddLogoutButton();
+	      var currentLocation = window.location.pathname;
+	      if (currentLocation != '/items') {
+	      	AddItemsButton();
+	      }
+	      
 	    } else{
 	    	LogInForm();
 	    }

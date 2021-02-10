@@ -2,7 +2,7 @@ import sys
 import os
 import inspect
 from functools import wraps
-from flask import Flask, jsonify, request, render_template, make_response, redirect
+from flask import Flask, jsonify, request, render_template, make_response, redirect, url_for
 from flask import g as flask_g
 import logging
 import psycopg2
@@ -41,20 +41,6 @@ def require_user(api_method):
 @app.route("/", methods=['GET'])
 def index():
     return render_template('index.html')
-
-
-@app.route("/set")
-def set_cookie():
-    response = make_response('setting cookie!')
-    response.set_cookie('framework', 'flask')
-
-    return response
-
-
-@app.route("/get")
-def get_cookie():
-    framework = request.cookies.get('framework')
-    return 'The framework is' + framework
 
 
 @app.route('/sign-up', methods=['POST'])
@@ -119,7 +105,8 @@ def add_new_item():
     user_id = flask_g.user_id
     item_url = request.form.get("item_url")
     user_utilities.scrap_for_new_item(user_id, item_url)
-    return redirect('/items', 201)
+
+    return redirect(url_for('view_items'))
 
 
 @app.route('/delete-item/<int:item_id>')
@@ -131,26 +118,28 @@ def delete_item(item_id):
     logger.debug(f'Delete is: {deleted_item}')
 
     if deleted_item:
-        return jsonify(data='Item deleted'), 200
+        return redirect(url_for('view_items'))
+
     return jsonify(items=['Error']), 401
 
 
 @app.route('/change-item/<int:item_id>', methods=['GET'])
 @require_user
-def change_item(item_id):
-    render_template()
+def change_item_view(item_id):
+    return render_template('change_item_target.html')
 
 
 @app.route('/change-item/<int:item_id>', methods=['POST'])
 @require_user
 def change_item(item_id):
     user_id = flask_g.user_id
-
-    Changed_item = None
+    target_price = request.form.get("target_price")
+    Changed_item = user_utilities.change_target_price(target_price, user_id, item_id)
     logger.debug(f'Changed is: {Changed_item}')
 
     if Changed_item:
-        return jsonify(data='Item changed'), 200
+        return redirect(url_for('view_items'))
+
     return jsonify(items=['Error']), 401
 
 # routes with DELETE PUT
