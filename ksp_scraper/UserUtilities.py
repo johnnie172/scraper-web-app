@@ -107,13 +107,19 @@ class UserUtilities:
     def delete_user_item(self,user_id,item_id):
         """Delete user item."""
         self.logger.debug(f'user_id: {user_id}, item_id: {item_id}.')
-        self.db_queries.delete_user_item(user_id, item_id)
+        if self.db_queries.delete_user_item(user_id, item_id):
+            return True
+
+        return False
 
         #todo change target_price
     def change_target_price(self,target_price, user_id, item_id):
         """Changing user item target price."""
         self.logger.debug(f'user_id: {user_id}, item_id: {item_id}, target_price: {target_price}.')
-        self.db_queries.change_target_price(target_price, user_id, item_id)
+        if self.db_queries.change_target_price(target_price, user_id, item_id):
+            return True
+
+        return False
 
     def notify_out_of_stock(self, users_emails, item_title):
         """Notify users that item is out of stock."""

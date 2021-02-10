@@ -65,8 +65,13 @@ class DBQueries:
         self.db.get_connection()
         with self.db.conn.cursor() as cur:
             cur.execute(query, vars)
+            count = cur.rowcount
             self.db.conn.commit()
             logger.info(f"{cur.rowcount} rows affected.")
+            if count:
+                return count
+            else:
+                return False
 
     def _delete(self, query, vars):
         """Run a SQL query to delete rows in table."""
@@ -183,8 +188,12 @@ class DBQueries:
         update_command = '''UPDATE users_items
                             SET target_price = %s
                             WHERE user_id = %s AND item_id = %s'''
-        self._insert(update_command, vars)
+        count = self._insert(update_command, vars)
         logger.debug(f'Query is: {update_command}, the vars are{vars}.')
+        if count:
+            return count
+        else:
+            return False
 
     def select_all_uin(self):
         """Run SELECT all rows of in stock items from items to get a dict of id's and uin's."""
