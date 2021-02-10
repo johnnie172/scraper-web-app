@@ -142,22 +142,6 @@ def change_item(item_id):
 
     return jsonify(data=['Error']), 401
 
-# routes with DELETE PUT
-# @app.route('/item-alert', methods=['DELETE'])
-# @require_user
-# def delete_item():
-#     user_id = flask_g.user_id
-#     # delete item from users items table
-#     return jsonify(data='Item deleted'), 200
-#
-#
-# @app.route('/item-alert', methods=['PUT'])
-# @require_user
-# def change_target_price():
-#     user_id = flask_g.user_id
-#     # changing target price for user item
-#     return jsonify(items=[None]), 201
-
 
 @app.route('/items', methods=['GET'])
 @require_user

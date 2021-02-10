@@ -16,22 +16,6 @@ class UserUtilities:
         self.db_queries = db_queries
 
 
-    # OLD CLI app
-    # def user_login(self):
-    #     """Login user, returning the id and email after verifying password"""
-    #     email = user_input_utilities.input_user_email()
-    #     user = self.db_queries.select_user(email)
-    #     id = user[0]
-    #     email = user[1]
-    #     password = user[2]
-    #
-    #     if self.verify_password(password):
-    #         self.logger.debug(f'User with email:{email} is logged in!')
-    #         return (id, email)
-    #     else:
-    #         self.logger.debug('Password not matches!')
-    #         print('Wrong password!')
-    #         return False
 
     def user_login(self, email, password):
         """Login user, returning the id and email after verifying password"""
@@ -47,21 +31,6 @@ class UserUtilities:
             self.logger.debug('Password not matches!')
             print('Wrong password!')
             return False
-
-    # OLD CLI app
-    # def user_signup(self):
-    #     """Signup user, adding to db_queries instance and returning user_id"""
-    #     email = user_input_utilities.input_user_email()
-    #     password = user_input_utilities.input_user_password_sign_up()
-    #     user_id = self.db_queries.add_user(email, password)
-    #
-    #     if user_id == None:
-    #         print(consts.EMAIL_ALREADY_EXISTS_MESSAGE)
-    #         self.logger.debug(f'{consts.EMAIL_ALREADY_EXISTS_MESSAGE}, email is: {email}.')
-    #         return None
-    #
-    #     self.logger.debug(f'New user is added, user id is:{user_id}')
-    #     return user_id
 
     def user_signup(self, email, password, password2):
         """Signup user, adding to db_queries instance and returning user_id"""
@@ -112,7 +81,6 @@ class UserUtilities:
 
         return False
 
-        #todo change target_price
     def change_target_price(self,target_price, user_id, item_id):
         """Changing user item target price."""
         self.logger.debug(f'user_id: {user_id}, item_id: {item_id}, target_price: {target_price}.')
@@ -174,19 +142,6 @@ class UserUtilities:
         pwdhash = binascii.hexlify(pwdhash)
         self.logger.debug('Hashing password.')
         return (salt + pwdhash).decode('ascii')
-
-    # OLD CLI app
-    # def verify_password(self, stored_password):
-    #     """Verify a stored password against one provided by user"""
-    #     salt = stored_password[:64]
-    #     stored_password = stored_password[64:]
-    #     pwdhash = hashlib.pbkdf2_hmac('sha512',
-    #                                   user_input_utilities.input_user_password().encode('utf-8'),
-    #                                   salt.encode('ascii'),
-    #                                   100000)
-    #     pwdhash = binascii.hexlify(pwdhash).decode('ascii')
-    #     self.logger.debug('Verifying password.')
-    #     return pwdhash == stored_password
 
     def verify_password(self, password, stored_password):
         """Verify a stored password against one provided by user"""
