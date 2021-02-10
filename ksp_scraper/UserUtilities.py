@@ -116,8 +116,9 @@ class UserUtilities:
     def change_target_price(self,target_price, user_id, item_id):
         """Changing user item target price."""
         self.logger.debug(f'user_id: {user_id}, item_id: {item_id}, target_price: {target_price}.')
-        if self.db_queries.change_target_price(target_price, user_id, item_id):
-            return True
+        if self.db_queries.check_for_target_price(item_id, target_price):
+            if self.db_queries.change_target_price(target_price, user_id, item_id):
+                return True
 
         return False
 

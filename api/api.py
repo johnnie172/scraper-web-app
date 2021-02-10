@@ -57,7 +57,7 @@ def signup():
         return response
 
     logger.debug(f'User exists')
-    return jsonify(items=['Error']), 401
+    return jsonify(data=['Error']), 401
 
 
 @app.route('/sign-in', methods=['POST'])
@@ -140,7 +140,7 @@ def change_item(item_id):
     if Changed_item:
         return redirect(url_for('view_items'))
 
-    return jsonify(items=['Error']), 401
+    return jsonify(data=['Error']), 401
 
 # routes with DELETE PUT
 # @app.route('/item-alert', methods=['DELETE'])

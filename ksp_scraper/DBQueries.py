@@ -115,6 +115,7 @@ class DBQueries:
                 id = cur.fetchone()[0]
                 self.db.conn.commit()
             except(UniqueViolation):
+                self.db.conn.rollback()
                 logger.debug('There is UniqueViolation error!')
                 return None
             logger.info(f"{cur.rowcount} rows affected, the id is:{id} ")
@@ -195,6 +196,20 @@ class DBQueries:
         else:
             return False
 
+    def check_for_target_price(self, item_id, target_price):
+        """Run SELECT query for checking if target price isn`t higher then current price."""
+        vars = (item_id, target_price)
+        select_command = '''SELECT price
+                            FROM prices
+                            WHERE item_id = %s AND price < %s
+                            ORDER BY time_stamp DESC'''
+        count = self.select_row_with_condition(select_command, vars)
+        logger.debug(f'Query is: {select_command}, the vars are{vars}.')
+        if count:
+            return count
+        else:
+            return False
+
     def select_all_uin(self):
         """Run SELECT all rows of in stock items from items to get a dict of id's and uin's."""
         query = "SELECT id, uin FROM items WHERE in_stock = true"
@@ -266,7 +281,7 @@ class DBQueries:
 
         return records
 
-    def check_target_prices(self, item_id_list):
+    def check_users_target_prices(self, item_id_list):
         """Run select query for checking if target price is reached, returns user_id, item_id for those who met
          the conditions."""
         query = '''SELECT DISTINCT ui.user_id,ui.item_id 

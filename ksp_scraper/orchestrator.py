@@ -41,7 +41,7 @@ def storing_and_sorting_items_data(db_queries, items_to_store):
 
     id_list_to_pass = [(item[0],) for item in items_to_store]
     logger.debug(f'id_list_to_pass: {id_list_to_pass}')
-    target_price_list = db_queries.check_target_prices(id_list_to_pass)
+    target_price_list = db_queries.check_users_target_prices(id_list_to_pass)
 
     return target_price_list
 
@@ -59,23 +59,6 @@ def out_of_stock_manger(db_queries, user_utilities, out_of_stock_items):
         emails_to_send = record.emails
         user_utilities.notify_out_of_stock(emails_to_send, item_title)
 
-#todo change this
-def get_items_in_range():
-    new_items = []
-    for item_uin in range(10000,12000):
-        print(item_uin)
-        item_uin = str(item_uin)
-        text = request_utilities.get_text_from_url(consts.URL_TO_ADD_UIN + item_uin)
-        try:
-            title_and_price = data_parser.get_title_and_price(text)
-
-            if title_and_price:
-                logger.debug(f'Title and price are: {title_and_price}.')
-                price = data_parser.change_price_from_str_to_decimal(title_and_price[1])
-                item_title = title_and_price[0]
-                new_items.append((item_title, item_uin, price))
-        except:
-            pass
 
 def get_new_item(item_url):
 
