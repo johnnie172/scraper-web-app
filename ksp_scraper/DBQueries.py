@@ -44,6 +44,16 @@ class DBQueries:
             logger.info(f"{cur.rowcount} rows affected.")
             return record
 
+    def select_row_with_vars(self, query, vars):
+        """Run a SQL query to select row from table."""
+        self.db.get_connection()
+        with self.db.conn.cursor() as cur:
+            cur.execute(query, vars)
+            logger.debug(f'Query is: {query}.')
+            record = cur.fetchone()
+            logger.info(f"{cur.rowcount} rows affected.")
+            return record
+
     def select_rows_dict_cursor(self, query):
         """Run a SELECT query and return list of dicts."""
         self.db.get_connection()
@@ -201,12 +211,26 @@ class DBQueries:
         vars = (item_id, target_price)
         select_command = '''SELECT price
                             FROM prices
-                            WHERE item_id = %s AND price < %s
+                            WHERE item_id = %s AND price > %s
                             ORDER BY time_stamp DESC'''
         count = self.select_row_with_condition(select_command, vars)
         logger.debug(f'Query is: {select_command}, the vars are{vars}.')
         if count:
             return count
+        else:
+            return False
+
+    def select_max_target_price(self, item_id):
+        """Run SELECT query for checking if target price isn`t higher then current price."""
+        vars = (item_id,)
+        select_command = '''SELECT price
+                            FROM prices
+                            WHERE item_id = %s
+                            ORDER BY time_stamp DESC'''
+        record = self.select_row_with_vars(select_command, vars)
+        logger.debug(f'Query is: {select_command}, the vars are{vars}.')
+        if record:
+            return record
         else:
             return False
 

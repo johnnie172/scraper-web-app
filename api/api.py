@@ -33,7 +33,7 @@ def require_user(api_method):
             flask_g.user_id = user_id
             return api_method(*args, **kwargs)
         else:
-            return redirect('/')
+            return redirect(url_for('index'))
 
     return check_user_id
 
@@ -68,7 +68,7 @@ def signin():
 
     if user_id_and_email:
         user_id = user_id_and_email[0]
-        response = make_response(redirect('/items'))
+        response = make_response(redirect(url_for('view_items')))
         response.set_cookie('user_id', f'{user_id}')
         logger.debug(f'User ID: {user_id}')
         return response
@@ -80,7 +80,7 @@ def signin():
 @app.route('/log-out', methods=['GET', 'POST'])
 @require_user
 def logout():
-    response = make_response(redirect('/'))
+    response = make_response(redirect(url_for('index')))
     response.set_cookie('user_id', max_age=0)
     return response
 
@@ -126,7 +126,13 @@ def delete_item(item_id):
 @app.route('/change-item/<int:item_id>', methods=['GET'])
 @require_user
 def change_item_view(item_id):
-    return render_template('change_item_target.html')
+
+    max_target_price = int(db_queries.select_max_target_price(item_id)[0])
+
+    if max_target_price:
+        return render_template('change_item_target.html', max_target_price=max_target_price)
+    else:
+        return jsonify(items=['Error']), 401
 
 
 @app.route('/change-item/<int:item_id>', methods=['POST'])

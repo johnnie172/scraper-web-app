@@ -6,7 +6,7 @@
 
       <div class="container">
         <label for="target_price"><b>Item Target</b></label>
-        <input type="number" placeholder="Enter Target Price" name="target_price" required>
+        <input type="number" placeholder="Enter Target Price" name="target_price" required min='1' max={{ max_target_price }}>
 
         <button type="submit" >Change</button>
 
@@ -18,7 +18,7 @@
 
 </body>
     <script>
-        
+
 
     </script>
 {% endblock content %}
