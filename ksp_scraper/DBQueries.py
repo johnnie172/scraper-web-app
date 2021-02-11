@@ -212,7 +212,7 @@ class DBQueries:
         select_command = '''SELECT price
                             FROM prices
                             WHERE item_id = %s AND price > %s
-                            ORDER BY time_stamp DESC'''
+                            ORDER BY time_stamp DESC LIMIT 1'''
         count = self.select_row_with_condition(select_command, vars)
         logger.debug(f'Query is: {select_command}, the vars are{vars}.')
         if count:
