@@ -9,21 +9,30 @@
 
 </head>
 <body>
-	<div class="navbar navbar-light bg-light">
-	    <a class="navbar-brand" href="/">Home</a>
-	    {% if (user_id) %}
-	    <a href="userRegistry"> Register </a>
-	</div>
-	<div class="login-container">
-        <form method="POST" action="login">
-            <input type="text" placeholder="Email" name="email">
-            <input type="password" placeholder="Password" name="password">
-            <button type="submit">Login</button>
-        </form>
-	    {% else %}
+	<div>
+		<nav class="navbar navbar-light bg-light">
+		    <a class="navbar-brand" href="/">Home</a>
+		    <ul class="navbar-nav">
+		    	<li class="nav-item">
+		    		<a href="#" class="nav-link">users</a> 
+		    	</li>
 
-	    {% endif %}
+		    </ul>
+		    {% if (user_id) %}
+		    <a href="userRegistry"> Register </a>
 
+		</nav>
+		<div class="login-container">
+	        <form method="POST" action="login">
+	            <input type="text" placeholder="Email" name="email">
+	            <input type="password" placeholder="Password" name="password">
+	            <button type="submit">Login</button>
+	        </form>
+		    {% else %}
+
+		    {% endif %}
+
+		</div>
 	</div>
 	<script type="text/javascript">
 	  //Creating form that logs out user.
@@ -32,15 +41,18 @@
 	  var inputButton = document.createElement("button"); 
 	  inputButton.setAttribute("type", "submit"); 
 	  inputButton.setAttribute("class", "logoutbtn");
-	  inputButton.setAttribute("id", "logoutbtn")
+	  inputButton.setAttribute("id", "logoutbtn");
+
+	  var listItem = document.createElement("li");
+	  listItem.setAttribute("class", "nav-item");
 
 	  var form = document.createElement("form"); 
 	  form.setAttribute("method", "get"); 
 	  form.setAttribute("action", "/log-out"); 
-
+	  listItem.appendChild(form);
 	  form.appendChild(inputButton);
-	  var navbar = document.getElementsByClassName('navbar')[0];
-	  navbar.appendChild(form);
+	  var navbar = document.getElementsByClassName('navbar-nav')[0];
+	  navbar.appendChild(listItem);
 	  // document.getElementsByTagName("body")[0].appendChild(form); 
 	  document.querySelector('#logoutbtn').innerHTML = 'Log Out';
 	  document.querySelector('#logoutbtn').innerText = 'Log Out';
@@ -56,6 +68,9 @@
 
       var labelPassword = document.createElement('label');
       labelPassword.setAttribute("for", "password");
+
+      var listItem = document.createElement("li");
+	  listItem.setAttribute("class", "nav-item");
 
       var inputPassword = document.createElement('input');
       inputPassword.setAttribute("type", "password");
@@ -79,9 +94,10 @@
 	  
 	  
 	  form.appendChild(inputButton);
+	  listItem.appendChild(form)
 
-	  var navbar = document.getElementsByClassName('navbar')[0];
-	  navbar.appendChild(form); 
+	  var navbar = document.getElementsByClassName('navbar-nav')[0];
+	  navbar.appendChild(listItem); 
 	  document.querySelector('#loginbtn').innerHTML = 'Log in';
 	  document.querySelector('#loginbtn').innerText = 'Log in';
 	  document.querySelector('#loginbtn').textContent = 'Log in';
@@ -92,7 +108,12 @@
 	  var itemsButton = document.createElement("button");
 	  itemsButton.setAttribute("onclick", "window.location.href='/items'"); 
 	  itemsButton.setAttribute("id", "itemsbtn");
-	  document.getElementsByTagName("body")[0].appendChild(itemsButton);
+
+      var listItem = document.createElement("li");
+	  listItem.setAttribute("class", "nav-item");
+	  listItem.appendChild(itemsButton)
+	  var navbar = document.getElementsByClassName('navbar-nav')[0];
+	  navbar.appendChild(listItem); 
 	  document.querySelector('#itemsbtn').innerHTML = 'View Items';
 	  document.querySelector('#itemsbtn').innerText = 'View Items';
 	  document.querySelector('#itemsbtn').textContent = 'View Items';
