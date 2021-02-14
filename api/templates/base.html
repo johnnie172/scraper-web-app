@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
-<link rel="stylesheet" href="static/css/style.css">
+<link rel="stylesheet" href="/static/css/style.css">
 
 <head>
 	<div class="topnav">
@@ -85,10 +85,10 @@
 
 	  function AddItemsButton() {
 
-	  	var itemsButton = document.createElement("button");
-	  	itemsButton.setAttribute("onclick", "window.location.href='/items'"); 
-	  	itemsButton.setAttribute("id", "itemsbtn");
-	  	document.getElementsByTagName("body")[0].appendChild(itemsButton);
+	  var itemsButton = document.createElement("button");
+	  itemsButton.setAttribute("onclick", "window.location.href='/items'"); 
+	  itemsButton.setAttribute("id", "itemsbtn");
+	  document.getElementsByTagName("body")[0].appendChild(itemsButton);
 	  document.querySelector('#itemsbtn').innerHTML = 'View Items';
 	  document.querySelector('#itemsbtn').innerText = 'View Items';
 	  document.querySelector('#itemsbtn').textContent = 'View Items';

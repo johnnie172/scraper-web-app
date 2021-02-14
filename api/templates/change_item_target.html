@@ -1,24 +1,23 @@
 {% extends "base.html" %}
 
 {% block content %}
-        <h1>Add Item</h1>
-    <form action='?' method="post">
+
+  <div class="container" id="change-target">
+    <h1>Change Target Price</h1>
+    <form action='?' method="post" id="change-target-inputs">
+
+        <label class='add-item-label' for="target_price"><b>Item Target</b></label>
+        <input class= 'add-item-input' type="number" placeholder="Enter Target Price" name="target_price" required min='1' max={{ max_target_price }}>
+
+        <button class='add-item-button' type="submit" >Change</button>
+
 
       <div class="container">
-        <label for="target_price"><b>Item Target</b></label>
-        <input type="number" placeholder="Enter Target Price" name="target_price" required min='1' max={{ max_target_price }}>
-
-        <button type="submit" >Change</button>
-
-      </div>
-
-      <div class="container" style="background-color:#f1f1f1">
       </div>
     </form>
+  </div>
+<script>
 
-</body>
-    <script>
 
-
-    </script>
+</script>
 {% endblock content %}
