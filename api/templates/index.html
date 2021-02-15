@@ -6,27 +6,34 @@
  -->
 
   
-  <div class="sign-up">
-    <h1>Sign Up</h1>
-    <form action="/sign-up" method="post">
-      <div class="container">
-        <label class="sign-up-label" for="email"><b>email</b></label>
-        <input class="sign-up-input" type="text" placeholder="Enter Email" name="email" required>
+  <div class="container sign-up">
+    <h1 class="row justify-content-center">Sign Up</h1>
+    <form class="row my-row justify-content-center form" action="/sign-up" method="post">
 
-        <label class="sign-up-label" for="password"><b>Password</b></label>
-        <input class="sign-up-input" type="password" placeholder="Enter Password" name="password" required>
-
-        <label class="sign-up-label" for="password2"><b>Password</b></label>
-        <input class="sign-up-input" type="password" placeholder="Enter Password Again" name="password2" required>
-
-        <button class="sign-up-button" type="submit">Sign Up</button>
-  <!--           <label class="checkbox">
-              <input type="checkbox" value="remember-me" id="remember_me"> Remember me
-          </label> -->
+      <div class="row justify-content-center my-row field-row">
+        <label class="col-md-3 sign-up-label" for="email"><b>email</b></label>
+        <input class="col-md-6 sign-up-input" type="text" placeholder="Enter Email" name="email" required>
       </div>
 
+      <div class="row justify-content-center my-row field-row">
+        <label class="col-md-3 sign-up-label" for="password"><b>Password</b></label>
+        <input class="col-md-6 sign-up-input" type="password" placeholder="Enter Password" name="password" required>
+      </div>
+
+      <div class="row justify-content-center my-row field-row">
+        <label class="col-md-3 sign-up-label" for="password2"><b>Password</b></label>
+        <input class="col-md-6 sign-up-input" type="password" placeholder="Enter Password Again" name="password2" required>
+      </div>
+
+      <div class="row justify-content-center my-row field-row">
+        <button class="col-3 sign-up-button" type="submit">Sign Up</button>
+      </div>
+<!--           <label class="checkbox">
+            <input type="checkbox" value="remember-me" id="remember_me"> Remember me
+        </label> -->
       <div class="container" style="background-color:#f1f1f1">
       </div>
+
     </form>
   </div>
 
