@@ -19,23 +19,29 @@
         </form>
     </div>
 
-    {% with messages = get_flashed_messages(with_categories=true) %}
-        {% if messages %}
-            {% for category, message in messages %}
-              <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert">
-                        <span>{{ message }}</span>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">×</span>
-                        </button>
-                    </div>
-            {% endfor %}
-        {% endif %}
-    {% endwith %}
-    
-    <h1 class="row justify-content-center my-row"> Your Items</h1>
-    <div class="container" id="items">
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <script>
+              var container = document.getElementsByClassName("container")[2];
+              var messages = {{ messages | safe }};
+              for (var i=0; i<messages.length; i++) {
+                var div = document.createElement("div");
+                div.setAttribute("class", "alert alert-info")
+                div.setAttribute("role", "alert")
+                container.appendChild(div);
+                var dateSpan = document.createElement('span')
+                dateSpan.innerHTML = messages[i];
+                div.appendChild(dateSpan);
+              }
 
-    </div>
+            </script>
+          {% endif %}
+        {% endwith %}
+
+            <h1 class="row justify-content-center my-row"> Your Items</h1>
+            <div class="container" id="items">
+
+            </div>
     <script type="text/javascript">        
     	var itemId = 0
         function appendData(data) {
