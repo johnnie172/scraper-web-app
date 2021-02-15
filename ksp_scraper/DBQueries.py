@@ -292,9 +292,12 @@ class DBQueries:
     def select_all_user_items(self, user_id):
         """Run SELECT query to get all the user items by user_id, returning list of dict objects."""
         # todo needs to get all items from items table after getting all items id ny user id
-        query = '''SELECT * FROM items AS i
+        query = '''SELECT i.id, i.in_stock AS stock, i.lowest AS lowest, ui.target_price AS target,
+                    i.title AS description
+                    FROM items AS i
                     LEFT JOIN users_items AS ui ON i.id = ui.item_id
-                    WHERE ui.user_id = %s'''
+                    WHERE ui.user_id = %s
+                    ORDER BY id DESC'''
         vars = (user_id,)
         self.db.get_connection()
         with self.db.conn.cursor(cursor_factory=RealDictCursor) as cur:
