@@ -2,7 +2,7 @@ import sys
 import os
 import inspect
 from functools import wraps
-from flask import Flask, jsonify, request, render_template, make_response, redirect, url_for
+from flask import Flask, jsonify, request, render_template, make_response, redirect, url_for, flash
 from flask import g as flask_g
 import logging
 import psycopg2
@@ -21,6 +21,8 @@ logging.basicConfig(filename='flask.log', level=10
 logger = logging.getLogger(__name__)
 db_queries = db_connection.get_db_queries()
 app = Flask(__name__)
+#todo CHANGE secret key!!
+app.secret_key = 'To Change this'
 user_utilities = UserUtilities(db_queries)
 
 
@@ -104,9 +106,15 @@ def get_items():
 def add_new_item():
     user_id = flask_g.user_id
     item_url = request.form.get("item_url")
-    user_utilities.scrap_for_new_item(user_id, item_url)
+    new_item = user_utilities.scrap_for_new_item(user_id, item_url)
 
-    return redirect(url_for('view_items'))
+    if new_item:
+
+        if new_item["alert_for_target"]:
+            flash(f'Please enter target price for: {new_item["item_title"]}!')
+        return redirect(url_for('view_items'))
+
+    return jsonify(items=['Error']), 401
 
 
 @app.route('/delete-item/<int:item_id>')

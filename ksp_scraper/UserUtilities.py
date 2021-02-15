@@ -71,7 +71,14 @@ class UserUtilities:
         new_item_dict['item_id'] = item_id
 
         self.db_queries.add_price(item_id, item_price)
-        self.db_queries.add_user_item(user_id, item_id, target_price=0)
+        user_item = self.db_queries.add_user_item(user_id, item_id, target_price=0)
+
+        if user_item:
+            new_item_dict['alert_for_target'] = True
+        else:
+            new_item_dict['alert_for_target'] = False
+
+        return new_item_dict
 
     def delete_user_item(self,user_id,item_id):
         """Delete user item."""

@@ -177,8 +177,11 @@ class DBQueries:
                             WHERE NOT EXISTS (
                             SELECT 1 FROM users_items WHERE user_id = %s and item_id = %s
                             )'''
-        self._insert(insert_command, vars)
+        count =self._insert(insert_command, vars)
         logger.debug(f'Query is: {insert_command}, the vars are{vars}.')
+        if count:
+            return count
+        return False
 
     def delete_user_item(self, user_id, item_id):
         """Run an DELETE query to delete user item."""
