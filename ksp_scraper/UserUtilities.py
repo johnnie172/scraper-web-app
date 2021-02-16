@@ -127,19 +127,31 @@ class UserUtilities:
                 self.logger.debug(f'items_users_dict is: {items_users_dict}')
 
         for item in items_users_dict:
+
             self.logger.debug(f'item is: {item}')
             item_uin = self.db_queries.select_row(f'SELECT uin FROM items WHERE id = {item}')
-            current_users_ids = items_users_dict[item]
-            self.logger.debug(f'current_users_ids is: {current_users_ids}')
-            email_records = self.db_queries.select_emails_to_notify(tuple(current_users_ids))
-            self.logger.debug(f'email_records are: {email_records}')
 
-            emails_to_send = ""
-            for email in email_records:
-                self.logger.debug(f'email is: {email}')
-                self.logger.debug(f'uin is: {item_uin}')
-                emails_to_send += (f', {email[0]}')
-            email_utilities.send_target_price_mail(emails_to_send, item_uin[0])
+            current_users_ids = items_users_dict[item]
+            self.logger.debug('-------------------------------------------------------')
+            self.logger.debug(f'current_users_ids is: {current_users_ids}')
+            current_users_ids_to_notify = self.db_queries.check_target_price_notify(current_users_ids, item)
+            self.logger.debug(f'current_users_ids_to_notify is: {current_users_ids_to_notify}')
+
+            if current_users_ids_to_notify:
+                current_users_ids_to_notify_list = [r[0] for r in current_users_ids_to_notify]
+
+                self.logger.debug(f'current_users_ids_to_notify_list is: {current_users_ids_to_notify_list}')
+
+                email_records = self.db_queries.select_emails_to_notify(tuple(current_users_ids_to_notify_list))
+                self.logger.debug(f'email_records are: {email_records}')
+
+                emails_to_send = ""
+                for email in email_records:
+                    self.logger.debug(f'email is: {email}')
+                    self.logger.debug(f'uin is: {item_uin}')
+                    emails_to_send += (f', {email[0]}')
+
+                email_utilities.send_target_price_mail(emails_to_send, item_uin[0])
 
     def hash_password(self, password):
         """Hash a password for storing."""

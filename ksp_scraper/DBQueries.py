@@ -341,6 +341,25 @@ class DBQueries:
 
         return records
 
+    def check_target_price_notify(self, users_id_list, item_id):
+        """Run UPDATE query to increase notify_count int from id's and returning the
+        id's that needs to by notify."""
+        query = '''UPDATE users_items
+                       SET notify_count = notify_count + 1
+                       WHERE user_id IN %s AND item_id = %s AND notify_count < 2
+                       RETURNING user_id '''
+        self.db.get_connection()
+        with self.db.conn.cursor() as cur:
+            logger.debug(f'Query is: {query}.')
+            cur.execute(query, (tuple(users_id_list), item_id))
+            records = cur.fetchall()
+            logger.info(f"{cur.rowcount} rows fetched.")
+
+            if records:
+                return records
+            else:
+                return False
+
     def select_emails_to_notify(self, users_id_list):
         """Run select query to get users mails from id's."""
         query = 'SELECT email FROM users WHERE id IN %s'
