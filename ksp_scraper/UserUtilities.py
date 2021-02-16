@@ -62,6 +62,8 @@ class UserUtilities:
         adding it to prices table,
         adding it to users items table with target of 0."""
         new_item_dict = orchestrator.get_new_item(item_url)
+        self.logger.debug(f'new_item_dict is: {new_item_dict}')
+
         item_price = new_item_dict.get("item_price")
         item_title = new_item_dict.get("item_title")
         item_uin = new_item_dict.get("item_uin")
@@ -72,12 +74,17 @@ class UserUtilities:
 
         self.db_queries.add_price(item_id, item_price)
         user_item = self.db_queries.add_user_item(user_id, item_id, target_price=0)
+        self.logger.debug(f'user_item is: {user_item}')
 
         if user_item:
             new_item_dict['alert_for_target'] = True
+            new_item_dict['Change'] = (f'/change-item/{item_id}')
+
         else:
             new_item_dict['alert_for_target'] = False
 
+
+        self.logger.debug(f'Returning new_item_dict is: {new_item_dict}')
         return new_item_dict
 
     def delete_user_item(self,user_id,item_id):

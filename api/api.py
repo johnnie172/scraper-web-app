@@ -112,6 +112,8 @@ def add_new_item():
 
         if new_item["alert_for_target"]:
             flash(f'Please enter target price for: {new_item["item_title"]}!')
+            flash(new_item["Change"])
+
         return redirect(url_for('view_items'))
 
     return jsonify(items=['Error']), 401

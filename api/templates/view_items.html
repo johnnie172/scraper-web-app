@@ -24,15 +24,23 @@
             <script>
               var container = document.getElementsByClassName("container")[2];
               var messages = {{ messages | safe }};
-              for (var i=0; i<messages.length; i++) {
+              if (messages.length == 2) {
                 var div = document.createElement("div");
                 div.setAttribute("class", "alert alert-info")
                 div.setAttribute("role", "alert")
+
+                var a = document.createElement('a');  
+                var link = document.createTextNode("Click to change"); 
+                a.appendChild(link);
+                a.title = "This is Link";
+                a.href = messages[1];
+                div.appendChild(a);
+
                 container.appendChild(div);
                 var dateSpan = document.createElement('span')
-                dateSpan.innerHTML = messages[i];
+                dateSpan.innerHTML = messages[0];
                 div.appendChild(dateSpan);
-              }
+                }
 
             </script>
           {% endif %}
@@ -49,6 +57,7 @@
 		  for (var i = 0; i < data.length; i++) {
 		    var div = document.createElement("div");
 		    div.innerHTML = 'id: ' + data[i].id + '. stock: ' + data[i].in_stock + '. lowest price: ' + data[i].lowest + '. target price: ' + data[i].target_price;
+
 
 		    mainContainer.appendChild(div);
 		  }
