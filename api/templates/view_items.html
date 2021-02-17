@@ -10,36 +10,50 @@
         <h1 class="row justify-content-center my-row">Add Item</h1>
         <form class="row justify-content-center my-row form" action="/item-alert" method="post">
 
-            <label class='col-md-2 add-item-label' for="item_url"><b>Item url</b></label>
             <input class='col-md-4 add-item-input' type="text" placeholder="Enter URL" name="item_url" required>
 
             <button class='col-md-2 add-item-button' type="submit">Add item</button>
 
-          <div class="container" style="background-color:#f1f1f1">
+          <div class="container">
         </form>
     </div>
 
+        <!-- Creating alert for new added item -->
         {% with messages = get_flashed_messages() %}
           {% if messages %}
             <script>
               var container = document.getElementsByClassName("container")[2];
               var messages = {{ messages | safe }};
               if (messages.length == 2) {
-                var div = document.createElement("div");
-                div.setAttribute("class", "alert alert-info")
-                div.setAttribute("role", "alert")
+                var div_row = document.createElement("div");
+                div_row.setAttribute("class", "row justify-content-center my-row alert")
+
+                var div_col = document.createElement("div");
+                div_col.setAttribute("class", "col-md-4 col-alert")
+
+                var div_col_link = document.createElement("div");
+                div_col_link.setAttribute("class", "col-md-4 col-link")
+
+                var div_alert = document.createElement("div");
+                div_alert.setAttribute("class", "alert alert-info")
+                div_alert.setAttribute("role", "alert")
 
                 var a = document.createElement('a');  
                 var link = document.createTextNode("Click to change"); 
                 a.appendChild(link);
                 a.title = "This is Link";
                 a.href = messages[1];
-                div.appendChild(a);
+                div_col_link.appendChild(a);
 
-                container.appendChild(div);
+                div_row.appendChild(div_col);
+                div_col.appendChild(div_alert);
+                div_row.appendChild(div_col_link);
+
+                container.appendChild(div_row);
+
                 var dateSpan = document.createElement('span')
                 dateSpan.innerHTML = messages[0];
-                div.appendChild(dateSpan);
+                div_alert.appendChild(dateSpan);
                 }
 
             </script>
