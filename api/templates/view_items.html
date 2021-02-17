@@ -132,6 +132,11 @@
                 	var urlData = data[i][col[j]]
                 	tabCell.innerHTML = `<a href="${urlData}">Delete</a>`;
                 }
+
+                if (j === 2) {
+                    var urlData = data[i][col[j]]
+                    tabCell.innerHTML = `<a href="${urlData}">Alert again</a>`;
+                }
             }
         }
 

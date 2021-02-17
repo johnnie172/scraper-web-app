@@ -388,3 +388,16 @@ class DBQueries:
             logger.info(f"{cur.rowcount} rows fetched.")
 
         return records
+
+    def reset_alert_count_for_item(self, user_id, item_id):
+        """Run UPDATE query for user item to reset the alert_count."""
+        vars = (user_id, item_id)
+        update_command = '''UPDATE users_items
+                            SET notify_count = 0
+                            WHERE user_id = %s AND item_id = %s'''
+        count = self._insert(update_command, vars)
+        logger.debug(f'Query is: {update_command}, the vars are{vars}.')
+        if count:
+            return count
+        else:
+            return False
