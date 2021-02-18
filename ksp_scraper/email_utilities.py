@@ -19,6 +19,11 @@ def get_smtp_service():
         logger.debug(f'_smtp_client is created')
     return _smtp_client
 
+def quit_smtp_service():
+    _smtp_client.quit()
+
+
+
 
 def send_target_price_mail(email, item_uin):
     msg = MIMEMultipart()
@@ -29,6 +34,7 @@ def send_target_price_mail(email, item_uin):
     msg.attach(MIMEText(message, 'plain'))
     get_smtp_service().send_message(msg)
     logger.debug(f'Sending email to: {email}, about target price to uin:{item_uin}.')
+    quit_smtp_service()
 
     del msg
 
@@ -42,5 +48,6 @@ def send_out_of_stock_mail(email, item_title):
     msg.attach(MIMEText(message, 'plain'))
     get_smtp_service().send_message(msg)
     logger.debug(f'Sending email to: {email}, about out of stock item to item:{item_title}.')
+    quit_smtp_service()
 
     del msg
