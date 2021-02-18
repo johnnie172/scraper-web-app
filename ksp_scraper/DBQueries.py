@@ -360,6 +360,10 @@ class DBQueries:
                        WHERE user_id IN %s AND item_id = %s AND notify_count < 2
                        RETURNING user_id '''
         self.db.get_connection()
+
+        logger.debug(f'users_id_list: {users_id_list}')
+        logger.debug(f'item id: {item_id}')
+
         with self.db.conn.cursor() as cur:
             logger.debug(f'Query is: {query}.')
             cur.execute(query, (tuple(users_id_list), item_id))
@@ -367,6 +371,8 @@ class DBQueries:
             logger.info(f"{cur.rowcount} rows fetched.")
 
             if records:
+                logger.info(f"records are: {records}")
+
                 return records
             else:
                 return False
