@@ -57,6 +57,7 @@ class DBQueries:
     def select_rows_dict_cursor(self, query):
         """Run a SELECT query and return list of dicts."""
         self.db.get_connection()
+        logger.debug(f'Query is: {query}.')
         with self.db.conn.cursor(cursor_factory=DictCursor) as cur:
             cur.execute(query)
             records = cur.fetchall()
@@ -68,6 +69,7 @@ class DBQueries:
         with self.db.conn.cursor() as cur:
             cur.execute(query)
             self.db.conn.commit()
+            logger.debug(f'Query is: {query}.')
             logger.info(f"{cur.rowcount} rows affected.")
 
     def _insert(self, query, vars):
@@ -77,6 +79,7 @@ class DBQueries:
             cur.execute(query, vars)
             count = cur.rowcount
             self.db.conn.commit()
+            logger.debug(f'Query is: {query}.')
             logger.info(f"{cur.rowcount} rows affected.")
             if count:
                 return count
@@ -136,6 +139,7 @@ class DBQueries:
         query = "SELECT id, email, password FROM users WHERE email = %s"
         vars = (email,)
         records = self.select_row_with_condition(query, vars)
+        logger.debug(f'Query is: {query}.')
         logger.debug(f'Records are: {records}.')
         return records
 
@@ -249,13 +253,20 @@ class DBQueries:
         # getting 2 values (id, price).
         self.db.get_connection()
         with self.db.conn.cursor() as cur:
+            query = "INSERT INTO prices (item_id, price) VALUES (%s, %s)"
+            logger.debug(f'Query is: {query}.')
+
             for record in item_id_and_price_list:
-                query = "INSERT INTO prices (item_id, price) VALUES (%s, %s)"
                 vars = (record[0], record[1])
                 cur.execute(query, vars)
                 logger.debug(f"{cur.rowcount} rows about to be committed.")
+            count = cur.rowcount
             self.db.conn.commit()
             logger.debug("Committed function.")
+            if count:
+                return count
+            else:
+                return False
 
     def check_for_lowest_price_and_update(self):
         """Run SELECT command for checking lowest price, if resulted with changes update lowest."""
