@@ -105,17 +105,21 @@ def get_items():
 @app.route('/item-alert', methods=['POST'])
 @require_user
 def add_new_item():
+
+    req = request.get_json()
+    logger.debug(f'req is: {req}')
+    item_url = req['url']
     user_id = flask_g.user_id
-    item_url = request.form.get("item_url")
+    res = make_response(jsonify({"message": "JSON recived"}), 200)
+
     new_item = user_utilities.scrap_for_new_item(user_id, item_url)
 
     if new_item:
-
         if new_item["alert_for_target"]:
             flash(f'Please enter target price for: {new_item["item_title"]}!')
             flash(new_item["Change"])
 
-        return redirect(url_for('view_items'))
+        return res
 
     return jsonify(items=['Error']), 401
 

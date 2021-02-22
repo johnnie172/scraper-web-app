@@ -8,11 +8,11 @@
 
     <div class="container" >
         <h1 class="row justify-content-center my-row">Add Item</h1>
-        <form class="row justify-content-center my-row form" action="/item-alert" method="post">
+        <div class="row justify-content-center my-row form form-group">
 
-            <input class='col-md-4 add-item-input' type="text" placeholder="Enter URL" name="item_url" required>
+            <input class='col-md-4 add-item-input' type="text" placeholder="Enter URL" name="item_url" id="url">
 
-            <button class='col-md-2 add-item-button' type="submit">Add item</button>
+            <button class='col-md-2 add-item-button' onclick="submit_entry();">Add item</button>
 
           <div class="container">
         </form>
@@ -32,7 +32,7 @@
                 div_col.setAttribute("class", "col-md-4 col-alert")
 
                 var div_col_link = document.createElement("div");
-                div_col_link.setAttribute("class", "col-md-4 col-link")
+                div_col_link.setAttribute("class", "col-md-4 col-link text-center")
 
                 var div_alert = document.createElement("div");
                 div_alert.setAttribute("class", "alert alert-info")
@@ -151,8 +151,35 @@
     		.then(CreateTableFromJSON)
         }
 
-        getItems();
 
+        function submit_entry() {
+
+            var url = document.getElementById("url")
+
+            var entry = {
+                url: url.value
+            };
+            fetch('/item-alert', {
+                method: "POST",
+                credentials: "include",
+                body: JSON.stringify(entry),
+                cache: "no-cache",
+                headers: new Headers({
+                    "content-type": "application/json"
+                })
+            })
+            .then(function (response) {
+                if (response.status !== 200) {
+                    console.log(`Response code: ${response.status}`);
+                    return ;
+                }
+                response.json().then(function () {
+                    location.reload();
+                })
+            })
+        }
+
+        getItems();
 
     </script>
 
