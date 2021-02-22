@@ -328,7 +328,7 @@ class DBQueries:
         query = '''SELECT DISTINCT ui.user_id,ui.item_id 
                     FROM users_items AS ui 
                     LEFT JOIN prices AS p ON p.item_id = ui.item_id 
-                    WHERE ui.item_id in %s AND ui.target_price <= p.price 
+                    WHERE ui.item_id in %s AND ui.target_price >= p.price 
                     ORDER BY ui.item_id'''
         self.db.get_connection()
         with self.db.conn.cursor() as cur:
