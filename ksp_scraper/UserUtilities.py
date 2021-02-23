@@ -112,6 +112,10 @@ class UserUtilities:
         """Notify users that item is at the target price."""
         self.logger.debug(f'users_id_records are:{users_id_records}')
 
+        if not users_id_records:
+            self.logger.debug('No users to notify.')
+            return None
+
         users_list = []
         current_item_id = users_id_records[0][1]
         items_users_dict = {}
