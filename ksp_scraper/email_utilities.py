@@ -11,7 +11,7 @@ _smtp_client = None
 
 
 def test_conn_open(_smpt_client):
-
+    """Testing the connection to the smtp service."""
     global _smtp_client
     logger.debug("testing connection to smpt.")
 
@@ -24,7 +24,7 @@ def test_conn_open(_smpt_client):
 
 
 def get_smtp_service():
-
+    """Getting connection to the smtp client."""
     global _smtp_client
 
     if not test_conn_open(_smtp_client):
@@ -41,13 +41,14 @@ def get_smtp_service():
 
 
 def quit_smtp_service():
+    """Quiting stmp service."""
     logger.debug(f'Quiting _smtp_client!')
     _smtp_client.quit()
     logger.debug(f'{_smtp_client}')
 
 
 def send_target_price_mail(email, item_uin):
-
+    """Sending target price mail to the smtp service."""
     msg = MIMEMultipart()
     message = f'The item that you wanted is now at the target price, item link: {consts.URL_TO_ADD_UIN + item_uin}.'
     msg['From'] = smtp_config.SMTP_ADDRESS
@@ -66,6 +67,8 @@ def send_target_price_mail(email, item_uin):
 
 
 def send_out_of_stock_mail(email, item_title):
+    """Sending out of stock mail to the smtp service."""
+
     msg = MIMEMultipart()
     message = f'The item that you wanted is now out of stock, item title: {item_title}.'
     msg['From'] = smtp_config.SMTP_ADDRESS

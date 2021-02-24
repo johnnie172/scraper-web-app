@@ -48,7 +48,6 @@ def storing_and_sorting_items_data(db_queries, items_to_store):
 
 def out_of_stock_manger(db_queries, user_utilities, out_of_stock_items):
     """Changing to out of stock and notifying users."""
-
     records = db_queries.select_emails_for_out_of_stock_items(out_of_stock_items)
 
     db_queries.change_to_out_of_stock(out_of_stock_items)
@@ -61,7 +60,7 @@ def out_of_stock_manger(db_queries, user_utilities, out_of_stock_items):
 
 
 def get_new_item(item_url):
-
+    """Adding new item, returning item dict."""
     item_uin = data_parser.parse_uin_from_url(item_url)
     text = request_utilities.get_text_from_url(consts.URL_TO_ADD_UIN + item_uin)
 
