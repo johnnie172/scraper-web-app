@@ -128,7 +128,8 @@
         for (var i = 0; i < data.length; i++) {
             
             var item = data[index[i]];
-            tr.setAttribute('data-item-id', item['id'])
+            var itemId = item['id'];
+            tr.setAttribute('data-item-id', itemId)
             tr = table.insertRow(-1);
 
             // ADDING CELLS.
@@ -144,12 +145,12 @@
 
                 if (j === 1) {
                 	var urlData = data[i][col[j]]
-                	tabCell.innerHTML = `<a href="${urlData}">Delete</a>`;
+                	tabCell.innerHTML = "<button class='btn delete-item-button' onclick='submit_delete("+ itemId +");'>Delete item</button>";
                 }
 
                 if (j === 2) {
                     var urlData = data[i][col[j]]
-                    tabCell.innerHTML = `<a href="${urlData}">Alert again</a>`;
+                    tabCell.innerHTML = "<button class='btn add-item-button' onclick='submit_entry(itemId);'>Add item</button>"
                 }
             }
         }
@@ -175,6 +176,58 @@
             };
             fetch('/item-alert', {
                 method: "POST",
+                credentials: "include",
+                body: JSON.stringify(entry),
+                cache: "no-cache",
+                headers: new Headers({
+                    "content-type": "application/json"
+                })
+            })
+            .then(function (response) {
+                if (response.status !== 200) {
+                    console.log(`Response code: ${response.status}`);
+                    return ;
+                }
+                response.json().then(function () {
+                    location.reload();
+                })
+            })
+        }
+        
+        function submit_change() {
+
+            var url = document.getElementById("url")
+
+            var entry = {
+                url: url.value
+            };
+            fetch('/item-alert', {
+                method: "PUT",
+                credentials: "include",
+                body: JSON.stringify(),
+                cache: "no-cache",
+                headers: new Headers({
+                    "content-type": "application/json"
+                })
+            })
+            .then(function (response) {
+                if (response.status !== 200) {
+                    console.log(`Response code: ${response.status}`);
+                    return ;
+                }
+                response.json().then(function () {
+                    location.reload();
+                })
+            })
+        }
+
+        function submit_delete(itemId) {
+            console.log(itemId)
+            var entry = {
+                item_id: itemId
+            };
+            fetch('/item-alert', {
+                method: "DELETE",
                 credentials: "include",
                 body: JSON.stringify(entry),
                 cache: "no-cache",

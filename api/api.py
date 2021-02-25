@@ -124,18 +124,35 @@ def add_new_item():
     return jsonify(items=['Error']), 401
 
 
-@app.route('/delete-item/<int:item_id>')
+@app.route('/item-alert', methods=['DELETE'])
 @require_user
-def delete_item(item_id):
+def delete_item():
+
+    req = request.get_json()
+    logger.debug(f'req is: {req}')
+    item_id = req['item_id']
     user_id = flask_g.user_id
+    res = make_response(jsonify({"message": "JSON recived"}), 200)
+    delete_item = db_queries.delete_user_item(user_id, item_id)
 
-    deleted_item = db_queries.delete_user_item(user_id, item_id)
-    logger.debug(f'Delete is: {deleted_item}')
-
-    if deleted_item:
-        return redirect(url_for('view_items'))
+    if delete_item:
+        return res
 
     return jsonify(items=['Error']), 401
+
+
+# @app.route('/delete-item/<int:item_id>')
+# @require_user
+# def delete_item(item_id):
+#     user_id = flask_g.user_id
+#
+#     deleted_item = db_queries.delete_user_item(user_id, item_id)
+#     logger.debug(f'Delete is: {deleted_item}')
+#
+#     if deleted_item:
+#         return redirect(url_for('view_items'))
+#
+#     return jsonify(items=['Error']), 401
 
 
 @app.route('/reset-notify-count/<int:item_id>')
