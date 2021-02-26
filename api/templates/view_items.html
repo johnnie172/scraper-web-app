@@ -150,7 +150,7 @@
 
                 if (j === 2) {
                     var urlData = data[i][col[j]]
-                    tabCell.innerHTML = "<button class='btn add-item-button' onclick='submit_entry(itemId);'>Add item</button>"
+                    tabCell.innerHTML = "<button class='btn reset-alert-button' onclick='submit_entry(itemId);'>Reset alert</button>"
                 }
             }
         }
@@ -194,17 +194,15 @@
             })
         }
         
-        function submit_change() {
-
-            var url = document.getElementById("url")
+        function submit_change(itemId) {
 
             var entry = {
-                url: url.value
+                item_id: itemId
             };
             fetch('/item-alert', {
                 method: "PUT",
                 credentials: "include",
-                body: JSON.stringify(),
+                body: JSON.stringify(entry),
                 cache: "no-cache",
                 headers: new Headers({
                     "content-type": "application/json"
@@ -222,7 +220,7 @@
         }
 
         function submit_delete(itemId) {
-            console.log(itemId)
+
             var entry = {
                 item_id: itemId
             };
