@@ -5,10 +5,65 @@
 <html lang="en">
 {% block content %}
 <body>
-    <h1> Your Items</h1>
-    <div id="items">
 
+    <div class="container" >
+        <h1 class="row justify-content-center my-row">Add Item</h1>
+        <div class="row justify-content-center my-row form form-group">
+
+            <input class='col-md-4 add-item-input' type="text" placeholder="Enter URL" name="item_url" id="url">
+
+            <button class='col-md-2 add-item-button' onclick="submit_entry();">Add item</button>
+
+          <div class="container">
+        </form>
     </div>
+
+        <!-- Creating alert for new added item -->
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            <script>
+              var container = document.getElementsByClassName("container")[2];
+              var messages = {{ messages | safe }};
+              if (messages.length == 2) {
+                var div_row = document.createElement("div");
+                div_row.setAttribute("class", "row justify-content-center my-row alert")
+
+                var div_col = document.createElement("div");
+                div_col.setAttribute("class", "col-md-4 col-alert")
+
+                var div_col_link = document.createElement("div");
+                div_col_link.setAttribute("class", "col-md-4 col-link text-center")
+
+                var div_alert = document.createElement("div");
+                div_alert.setAttribute("class", "alert alert-info")
+                div_alert.setAttribute("role", "alert")
+
+                var a = document.createElement('a');  
+                var link = document.createTextNode("Click to change"); 
+                a.appendChild(link);
+                a.title = "This is Link";
+                a.href = messages[1];
+                div_col_link.appendChild(a);
+
+                div_row.appendChild(div_col);
+                div_col.appendChild(div_alert);
+                div_row.appendChild(div_col_link);
+
+                container.appendChild(div_row);
+
+                var dateSpan = document.createElement('span')
+                dateSpan.innerHTML = messages[0];
+                div_alert.appendChild(dateSpan);
+                }
+
+            </script>
+          {% endif %}
+        {% endwith %}
+
+            <h1 class="row justify-content-center my-row"> Your Items</h1>
+            <div class="container" id="items">
+
+            </div>
     <script type="text/javascript">        
     	var itemId = 0
         function appendData(data) {
@@ -16,6 +71,7 @@
 		  for (var i = 0; i < data.length; i++) {
 		    var div = document.createElement("div");
 		    div.innerHTML = 'id: ' + data[i].id + '. stock: ' + data[i].in_stock + '. lowest price: ' + data[i].lowest + '. target price: ' + data[i].target_price;
+
 
 		    mainContainer.appendChild(div);
 		  }
@@ -50,6 +106,18 @@
 
         var tr = table.insertRow(-1);                   // TABLE ROW.
 
+        // building index for data
+        var index = [];
+        // build the index
+        for (var x in data) {
+           index.push(x);
+        }
+        // sort the index
+        index.sort(function (a, b) {    
+           return a == b ? 0 : (a > b ? 1 : -1); 
+        }); 
+
+
         for (var i = 0; i < col.length; i++) {
             var th = document.createElement("th");      // TABLE HEADER.
             th.innerHTML = col[i];
@@ -58,7 +126,10 @@
 
         // ADD JSON DATA TO THE TABLE AS ROWS.
         for (var i = 0; i < data.length; i++) {
-
+            
+            var item = data[index[i]];
+            var itemId = item['id'];
+            tr.setAttribute('data-item-id', itemId)
             tr = table.insertRow(-1);
 
             // ADDING CELLS.
@@ -74,7 +145,12 @@
 
                 if (j === 1) {
                 	var urlData = data[i][col[j]]
-                	tabCell.innerHTML = `<a href="${urlData}">Delete</a>`;
+                	tabCell.innerHTML = "<button class='btn delete-item-button' onclick='submit_delete("+ itemId +");'>Delete item</button>";
+                }
+
+                if (j === 2) {
+                    var urlData = data[i][col[j]]
+                    tabCell.innerHTML = "<button class='btn reset-alert-button' onclick='submit_entry(itemId);'>Reset alert</button>"
                 }
             }
         }
@@ -90,25 +166,87 @@
     		.then(CreateTableFromJSON)
         }
 
+
+        function submit_entry() {
+
+            var url = document.getElementById("url")
+
+            var entry = {
+                url: url.value
+            };
+            fetch('/item-alert', {
+                method: "POST",
+                credentials: "include",
+                body: JSON.stringify(entry),
+                cache: "no-cache",
+                headers: new Headers({
+                    "content-type": "application/json"
+                })
+            })
+            .then(function (response) {
+                if (response.status !== 200) {
+                    console.log(`Response code: ${response.status}`);
+                    return ;
+                }
+                response.json().then(function () {
+                    location.reload();
+                })
+            })
+        }
+        
+        function submit_change(itemId) {
+
+            var entry = {
+                item_id: itemId
+            };
+            fetch('/item-alert', {
+                method: "PUT",
+                credentials: "include",
+                body: JSON.stringify(entry),
+                cache: "no-cache",
+                headers: new Headers({
+                    "content-type": "application/json"
+                })
+            })
+            .then(function (response) {
+                if (response.status !== 200) {
+                    console.log(`Response code: ${response.status}`);
+                    return ;
+                }
+                response.json().then(function () {
+                    location.reload();
+                })
+            })
+        }
+
+        function submit_delete(itemId) {
+
+            var entry = {
+                item_id: itemId
+            };
+            fetch('/item-alert', {
+                method: "DELETE",
+                credentials: "include",
+                body: JSON.stringify(entry),
+                cache: "no-cache",
+                headers: new Headers({
+                    "content-type": "application/json"
+                })
+            })
+            .then(function (response) {
+                if (response.status !== 200) {
+                    console.log(`Response code: ${response.status}`);
+                    return ;
+                }
+                response.json().then(function () {
+                    location.reload();
+                })
+            })
+        }
+
         getItems();
 
-
     </script>
-
-        <h1>Add Item</h1>
-    <form action="/item-alert" method="post">
-
-      <div class="add-item">
-        <label class='add-item-label' for="item_url"><b>Item url</b></label>
-        <input class='add-item-input' type="text" placeholder="Enter URL" name="item_url" required>
-
-        <button class='add-item-button' type="submit">Add item</button>
-
-      </div>
-
-      <div class="container" style="background-color:#f1f1f1">
-      </div>
-    </form>
 
 </body>
 {% endblock content %}

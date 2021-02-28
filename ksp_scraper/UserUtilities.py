@@ -62,6 +62,8 @@ class UserUtilities:
         adding it to prices table,
         adding it to users items table with target of 0."""
         new_item_dict = orchestrator.get_new_item(item_url)
+        self.logger.debug(f'new_item_dict is: {new_item_dict}')
+
         item_price = new_item_dict.get("item_price")
         item_title = new_item_dict.get("item_title")
         item_uin = new_item_dict.get("item_uin")
@@ -71,7 +73,19 @@ class UserUtilities:
         new_item_dict['item_id'] = item_id
 
         self.db_queries.add_price(item_id, item_price)
-        self.db_queries.add_user_item(user_id, item_id, target_price=0)
+        user_item = self.db_queries.add_user_item(user_id, item_id, target_price=0)
+        self.logger.debug(f'user_item is: {user_item}')
+
+        if user_item:
+            new_item_dict['alert_for_target'] = True
+            new_item_dict['Change'] = (f'/change-item/{item_id}')
+
+        else:
+            new_item_dict['alert_for_target'] = False
+
+
+        self.logger.debug(f'Returning new_item_dict is: {new_item_dict}')
+        return new_item_dict
 
     def delete_user_item(self,user_id,item_id):
         """Delete user item."""
@@ -98,6 +112,10 @@ class UserUtilities:
         """Notify users that item is at the target price."""
         self.logger.debug(f'users_id_records are:{users_id_records}')
 
+        if not users_id_records:
+            self.logger.debug('No users to notify.')
+            return None
+
         users_list = []
         current_item_id = users_id_records[0][1]
         items_users_dict = {}
@@ -120,19 +138,31 @@ class UserUtilities:
                 self.logger.debug(f'items_users_dict is: {items_users_dict}')
 
         for item in items_users_dict:
+
             self.logger.debug(f'item is: {item}')
             item_uin = self.db_queries.select_row(f'SELECT uin FROM items WHERE id = {item}')
-            current_users_ids = items_users_dict[item]
-            self.logger.debug(f'current_users_ids is: {current_users_ids}')
-            email_records = self.db_queries.select_emails_to_notify(tuple(current_users_ids))
-            self.logger.debug(f'email_records are: {email_records}')
 
-            emails_to_send = ""
-            for email in email_records:
-                self.logger.debug(f'email is: {email}')
-                self.logger.debug(f'uin is: {item_uin}')
-                emails_to_send += (f', {email[0]}')
-            email_utilities.send_target_price_mail(emails_to_send, item_uin[0])
+            current_users_ids = items_users_dict[item]
+            self.logger.debug('-------------------------------------------------------')
+            self.logger.debug(f'current_users_ids is: {current_users_ids}')
+            current_users_ids_to_notify = self.db_queries.check_target_price_notify(current_users_ids, item)
+            self.logger.debug(f'current_users_ids_to_notify is: {current_users_ids_to_notify}')
+
+            if current_users_ids_to_notify:
+                current_users_ids_to_notify_list = [r[0] for r in current_users_ids_to_notify]
+
+                self.logger.debug(f'current_users_ids_to_notify_list is: {current_users_ids_to_notify_list}')
+
+                email_records = self.db_queries.select_emails_to_notify(tuple(current_users_ids_to_notify_list))
+                self.logger.debug(f'email_records are: {email_records}')
+
+                emails_to_send = ""
+                for email in email_records:
+                    self.logger.debug(f'email is: {email}')
+                    self.logger.debug(f'uin is: {item_uin}')
+                    emails_to_send += (f', {email[0]}')
+
+                email_utilities.send_target_price_mail(emails_to_send, item_uin[0])
 
     def hash_password(self, password):
         """Hash a password for storing."""

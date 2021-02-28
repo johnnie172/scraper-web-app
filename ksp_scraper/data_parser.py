@@ -11,7 +11,15 @@ def get_title_and_price(source_text_beautiful):
     """Function that scraping for the price and title from a link, returning tuple of both."""
     try:
         price_div = source_text_beautiful.find(class_="div-options-prices")
-        price = price_div.span.text
+        try:
+            sale_price = price_div.find(class_="span-new-price-get-item")
+            sale_price = sale_price.text
+            price = sale_price
+            logger.debug("There is a sale.")
+        except:
+            logger.debug("There isn't a sale.")
+            price = price_div.span.text
+
         logger.debug(f'The price is: {price}.')
         title_div = source_text_beautiful.find(class_="title-text")
         title = title_div.span.text

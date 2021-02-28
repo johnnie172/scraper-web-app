@@ -15,7 +15,8 @@ CREATE TABLE IF NOT EXISTS items (
 CREATE TABLE IF NOT EXISTS users_items (
     user_id integer NOT NULL,
     item_id integer NOT NULL,
-    target_price NUMERIC NOT NULL
+    target_price NUMERIC NOT NULL,
+    notify_count SMALLINT DEFAULT 0
 );
 CREATE TABLE IF NOT EXISTS prices (
     item_id integer NOT NULL,

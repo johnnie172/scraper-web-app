@@ -1,29 +1,42 @@
 <!DOCTYPE html>
 <html lang="en">
-<link rel="stylesheet" href="/static/css/style.css">
 
 <head>
-	<div class="topnav">
-	    <a class="active" href="/">Home</a>
-	    {% if (user_id) %}
-	    <a href="userRegistry"> Register </a>
-	    <div class="login-container">
+	<link rel="stylesheet" href="/static/css/style.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.0-beta2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BmbxuPwQa2lc/FVzBcNJ7UAyJxM6wuqIj61tLrc4wSX0szH/Ev+nYRRuWlolflfl" crossorigin="anonymous">
+
+</head>
+<body>
+	<div class="container container-navbar" id="container-navbar">
+		
+		<nav class="navbar navbar-expand-md navbar-light bg-light">
+		    <a class="btn navbar-brand" href="/">Home</a>
+		    <button class="navbar-toggler" data-toggle="collapse" data-target="#navbarMenu">
+		    	<span class="navbar-toggler-icon"></span>
+		    </button>
+
+		    <div class="collapse navbar-collapse" id="navbarMenu">
+			    <ul class="navbar-nav">
+			    	<!-- Items from script are adding here as nav-item -->
+			    </ul>
+		    </div>
+
+		    {% if (user_id) %}
+		    <a href="userRegistry"> Register </a>
+		</nav>
+
+		<div class="row justify-content-center login-container">
 	        <form method="POST" action="login">
 	            <input type="text" placeholder="Email" name="email">
 	            <input type="password" placeholder="Password" name="password">
 	            <button type="submit">Login</button>
 	        </form>
+		    {% else %}
 
+		    {% endif %}
 
-
-	 </div>
-	    {% else %}
-
-	    {% endif %}
-
+		</div>
 	</div>
-</head>
-<body>
 	<script type="text/javascript">
 	  //Creating form that logs out user.
 	  function AddLogoutButton() {
@@ -31,14 +44,19 @@
 	  var inputButton = document.createElement("button"); 
 	  inputButton.setAttribute("type", "submit"); 
 	  inputButton.setAttribute("class", "logoutbtn");
-	  inputButton.setAttribute("id", "logoutbtn")
+	  inputButton.setAttribute("id", "logoutbtn");
+
+	  var listItem = document.createElement("li");
+	  listItem.setAttribute("class", "nav-item");
 
 	  var form = document.createElement("form"); 
 	  form.setAttribute("method", "get"); 
 	  form.setAttribute("action", "/log-out"); 
-
+	  listItem.appendChild(form);
 	  form.appendChild(inputButton);
-	  document.getElementsByTagName("body")[0].appendChild(form); 
+	  var navbar = document.getElementsByClassName('navbar-nav')[0];
+	  navbar.appendChild(listItem);
+	  // document.getElementsByTagName("body")[0].appendChild(form); 
 	  document.querySelector('#logoutbtn').innerHTML = 'Log Out';
 	  document.querySelector('#logoutbtn').innerText = 'Log Out';
 	  document.querySelector('#logoutbtn').textContent = 'Log Out';
@@ -53,6 +71,9 @@
 
       var labelPassword = document.createElement('label');
       labelPassword.setAttribute("for", "password");
+
+      var listItem = document.createElement("li");
+	  listItem.setAttribute("class", "nav-item");
 
       var inputPassword = document.createElement('input');
       inputPassword.setAttribute("type", "password");
@@ -76,8 +97,10 @@
 	  
 	  
 	  form.appendChild(inputButton);
+	  listItem.appendChild(form)
 
-	  document.getElementsByTagName("body")[0].appendChild(form); 
+	  var navbar = document.getElementsByClassName('navbar-nav')[0];
+	  navbar.appendChild(listItem); 
 	  document.querySelector('#loginbtn').innerHTML = 'Log in';
 	  document.querySelector('#loginbtn').innerText = 'Log in';
 	  document.querySelector('#loginbtn').textContent = 'Log in';
@@ -88,7 +111,12 @@
 	  var itemsButton = document.createElement("button");
 	  itemsButton.setAttribute("onclick", "window.location.href='/items'"); 
 	  itemsButton.setAttribute("id", "itemsbtn");
-	  document.getElementsByTagName("body")[0].appendChild(itemsButton);
+
+      var listItem = document.createElement("li");
+	  listItem.setAttribute("class", "nav-item");
+	  listItem.appendChild(itemsButton)
+	  var navbar = document.getElementsByClassName('navbar-nav')[0];
+	  navbar.appendChild(listItem); 
 	  document.querySelector('#itemsbtn').innerHTML = 'View Items';
 	  document.querySelector('#itemsbtn').innerText = 'View Items';
 	  document.querySelector('#itemsbtn').textContent = 'View Items';
@@ -125,8 +153,17 @@
 	  }
 	  
 	  checkCookie()
+
 	</script>
-    {% block content %}{% endblock content %}
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN"
+        crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js" integrity="sha384-ApNbgh9B+Y1QKtv3Rn7W3mgPxhU9K/ScQsAP7hUibX39j7fakFPskvXusvfa0b4Q"
+        crossorigin="anonymous"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js" integrity="sha384-JZR6Spejh4U02d8jOt6vLEHfe/JQGiRRSQQxSfFWpi1MquVdAyjUar5+76PVCmYl"
+        crossorigin="anonymous"></script>
+
+	{% block content %}{% endblock content %}
 </body>
 
 </html>

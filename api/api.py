@@ -2,7 +2,7 @@ import sys
 import os
 import inspect
 from functools import wraps
-from flask import Flask, jsonify, request, render_template, make_response, redirect, url_for
+from flask import Flask, jsonify, request, render_template, make_response, redirect, url_for, flash
 from flask import g as flask_g
 import logging
 import psycopg2
@@ -21,6 +21,8 @@ logging.basicConfig(filename='flask.log', level=10
 logger = logging.getLogger(__name__)
 db_queries = db_connection.get_db_queries()
 app = Flask(__name__)
+#todo CHANGE secret key!!
+app.secret_key = 'To Change this'
 user_utilities = UserUtilities(db_queries)
 
 
@@ -95,6 +97,7 @@ def get_items():
     for item in items:
         item['Delete'] = f'/delete-item/{item["id"]}'
         item['Change'] = f'/change-item/{item["id"]}'
+        item['Reset'] = f'/reset-notify-count/{item["id"]}'
 
     return jsonify(items), 200
 
@@ -102,22 +105,65 @@ def get_items():
 @app.route('/item-alert', methods=['POST'])
 @require_user
 def add_new_item():
+
+    req = request.get_json()
+    logger.debug(f'req is: {req}')
+    item_url = req['url']
     user_id = flask_g.user_id
-    item_url = request.form.get("item_url")
-    user_utilities.scrap_for_new_item(user_id, item_url)
+    res = make_response(jsonify({"message": "JSON recived"}), 200)
 
-    return redirect(url_for('view_items'))
+    new_item = user_utilities.scrap_for_new_item(user_id, item_url)
+
+    if new_item:
+        if new_item["alert_for_target"]:
+            flash(f'Please enter target price for: {new_item["item_title"]}!')
+            flash(new_item["Change"])
+
+        return res
+
+    return jsonify(items=['Error']), 401
 
 
-@app.route('/delete-item/<int:item_id>')
+@app.route('/item-alert', methods=['DELETE'])
 @require_user
-def delete_item(item_id):
+def delete_item():
+
+    req = request.get_json()
+    logger.debug(f'req is: {req}')
+    item_id = req['item_id']
+    user_id = flask_g.user_id
+    res = make_response(jsonify({"message": "JSON recived"}), 200)
+    delete_item = db_queries.delete_user_item(user_id, item_id)
+
+    if delete_item:
+        return res
+
+    return jsonify(items=['Error']), 401
+
+
+# @app.route('/delete-item/<int:item_id>')
+# @require_user
+# def delete_item(item_id):
+#     user_id = flask_g.user_id
+#
+#     deleted_item = db_queries.delete_user_item(user_id, item_id)
+#     logger.debug(f'Delete is: {deleted_item}')
+#
+#     if deleted_item:
+#         return redirect(url_for('view_items'))
+#
+#     return jsonify(items=['Error']), 401
+
+
+@app.route('/reset-notify-count/<int:item_id>')
+@require_user
+def reset_notify_count(item_id):
     user_id = flask_g.user_id
 
-    deleted_item = db_queries.delete_user_item(user_id, item_id)
-    logger.debug(f'Delete is: {deleted_item}')
+    reset_item = db_queries.reset_alert_count_for_item(user_id, item_id)
+    logger.debug(f'Reset is: {reset_item}')
 
-    if deleted_item:
+    if reset_item:
         return redirect(url_for('view_items'))
 
     return jsonify(items=['Error']), 401

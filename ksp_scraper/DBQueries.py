@@ -57,6 +57,7 @@ class DBQueries:
     def select_rows_dict_cursor(self, query):
         """Run a SELECT query and return list of dicts."""
         self.db.get_connection()
+        logger.debug(f'Query is: {query}.')
         with self.db.conn.cursor(cursor_factory=DictCursor) as cur:
             cur.execute(query)
             records = cur.fetchall()
@@ -68,6 +69,7 @@ class DBQueries:
         with self.db.conn.cursor() as cur:
             cur.execute(query)
             self.db.conn.commit()
+            logger.debug(f'Query is: {query}.')
             logger.info(f"{cur.rowcount} rows affected.")
 
     def _insert(self, query, vars):
@@ -77,6 +79,7 @@ class DBQueries:
             cur.execute(query, vars)
             count = cur.rowcount
             self.db.conn.commit()
+            logger.debug(f'Query is: {query}.')
             logger.info(f"{cur.rowcount} rows affected.")
             if count:
                 return count
@@ -136,6 +139,7 @@ class DBQueries:
         query = "SELECT id, email, password FROM users WHERE email = %s"
         vars = (email,)
         records = self.select_row_with_condition(query, vars)
+        logger.debug(f'Query is: {query}.')
         logger.debug(f'Records are: {records}.')
         return records
 
@@ -177,8 +181,11 @@ class DBQueries:
                             WHERE NOT EXISTS (
                             SELECT 1 FROM users_items WHERE user_id = %s and item_id = %s
                             )'''
-        self._insert(insert_command, vars)
+        count =self._insert(insert_command, vars)
         logger.debug(f'Query is: {insert_command}, the vars are{vars}.')
+        if count:
+            return count
+        return False
 
     def delete_user_item(self, user_id, item_id):
         """Run an DELETE query to delete user item."""
@@ -246,13 +253,20 @@ class DBQueries:
         # getting 2 values (id, price).
         self.db.get_connection()
         with self.db.conn.cursor() as cur:
+            query = "INSERT INTO prices (item_id, price) VALUES (%s, %s)"
+            logger.debug(f'Query is: {query}.')
+
             for record in item_id_and_price_list:
-                query = "INSERT INTO prices (item_id, price) VALUES (%s, %s)"
                 vars = (record[0], record[1])
                 cur.execute(query, vars)
                 logger.debug(f"{cur.rowcount} rows about to be committed.")
+            count = cur.rowcount
             self.db.conn.commit()
             logger.debug("Committed function.")
+            if count:
+                return count
+            else:
+                return False
 
     def check_for_lowest_price_and_update(self):
         """Run SELECT command for checking lowest price, if resulted with changes update lowest."""
@@ -292,9 +306,12 @@ class DBQueries:
     def select_all_user_items(self, user_id):
         """Run SELECT query to get all the user items by user_id, returning list of dict objects."""
         # todo needs to get all items from items table after getting all items id ny user id
-        query = '''SELECT * FROM items AS i
+        query = '''SELECT i.id, i.in_stock AS stock, i.lowest AS lowest, ui.target_price AS target,
+                    i.title AS description
+                    FROM items AS i
                     LEFT JOIN users_items AS ui ON i.id = ui.item_id
-                    WHERE ui.user_id = %s'''
+                    WHERE ui.user_id = %s
+                    ORDER BY id DESC'''
         vars = (user_id,)
         self.db.get_connection()
         with self.db.conn.cursor(cursor_factory=RealDictCursor) as cur:
@@ -311,7 +328,7 @@ class DBQueries:
         query = '''SELECT DISTINCT ui.user_id,ui.item_id 
                     FROM users_items AS ui 
                     LEFT JOIN prices AS p ON p.item_id = ui.item_id 
-                    WHERE ui.item_id in %s AND ui.target_price <= p.price 
+                    WHERE ui.item_id in %s AND ui.target_price >= p.price 
                     ORDER BY ui.item_id'''
         self.db.get_connection()
         with self.db.conn.cursor() as cur:
@@ -334,6 +351,31 @@ class DBQueries:
             logger.info(f"{cur.rowcount} rows fetched.")
 
         return records
+
+    def check_target_price_notify(self, users_id_list, item_id):
+        """Run UPDATE query to increase notify_count int from id's and returning the
+        id's that needs to by notify."""
+        query = '''UPDATE users_items
+                       SET notify_count = notify_count + 1
+                       WHERE user_id IN %s AND item_id = %s AND notify_count < 2
+                       RETURNING user_id '''
+        self.db.get_connection()
+
+        logger.debug(f'users_id_list: {users_id_list}')
+        logger.debug(f'item id: {item_id}')
+
+        with self.db.conn.cursor() as cur:
+            logger.debug(f'Query is: {query}.')
+            cur.execute(query, (tuple(users_id_list), item_id))
+            records = cur.fetchall()
+            logger.info(f"{cur.rowcount} rows fetched.")
+
+            if records:
+                logger.info(f"records are: {records}")
+
+                return records
+            else:
+                return False
 
     def select_emails_to_notify(self, users_id_list):
         """Run select query to get users mails from id's."""
@@ -363,3 +405,16 @@ class DBQueries:
             logger.info(f"{cur.rowcount} rows fetched.")
 
         return records
+
+    def reset_alert_count_for_item(self, user_id, item_id):
+        """Run UPDATE query for user item to reset the alert_count."""
+        vars = (user_id, item_id)
+        update_command = '''UPDATE users_items
+                            SET notify_count = 0
+                            WHERE user_id = %s AND item_id = %s'''
+        count = self._insert(update_command, vars)
+        logger.debug(f'Query is: {update_command}, the vars are{vars}.')
+        if count:
+            return count
+        else:
+            return False
