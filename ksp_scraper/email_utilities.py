@@ -2,6 +2,7 @@ import consts
 import smtp_config
 import smtplib
 import logging
+from retrying import retry
 from email.mime.multipart import MIMEMultipart
 from email.mime.text import MIMEText
 
@@ -23,6 +24,7 @@ def test_conn_open(_smpt_client):
     return True if status == 250 else False
 
 
+@retry(stop_max_attempt_number=5, wait_fixed=30000)
 def get_smtp_service():
     """Getting connection to the smtp client."""
     global _smtp_client
@@ -47,6 +49,7 @@ def quit_smtp_service():
     logger.debug(f'{_smtp_client}')
 
 
+@retry(stop_max_attempt_number=3, wait_fixed=80000)
 def send_target_price_mail(email, item_uin):
     """Sending target price mail to the smtp service."""
     msg = MIMEMultipart()
@@ -66,6 +69,7 @@ def send_target_price_mail(email, item_uin):
         return False
 
 
+@retry(stop_max_attempt_number=3, wait_fixed=80000)
 def send_out_of_stock_mail(email, item_title):
     """Sending out of stock mail to the smtp service."""
 

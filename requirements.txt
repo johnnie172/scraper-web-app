@@ -8,3 +8,4 @@ schedule
 celery
 Flask
 Flask-WTF
+retrying
