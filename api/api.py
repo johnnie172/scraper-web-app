@@ -95,9 +95,8 @@ def get_items():
     items = db_queries.select_all_user_items(user_id)
     logger.debug(items)
     for item in items:
-        item['Delete'] = f'/delete-item/{item["id"]}'
         item['Change'] = f'/change-item/{item["id"]}'
-        item['Reset'] = f'/reset-notify-count/{item["id"]}'
+
 
     return jsonify(items), 200
 
@@ -155,16 +154,20 @@ def delete_item():
 #     return jsonify(items=['Error']), 401
 
 
-@app.route('/reset-notify-count/<int:item_id>')
+@app.route('/reset-notify-count', methods=['PUT'])
 @require_user
-def reset_notify_count(item_id):
-    user_id = flask_g.user_id
+def reset_notify_count():
 
+    req = request.get_json()
+    logger.debug(f'req is: {req}')
+    item_id = req['item_id']
+    user_id = flask_g.user_id
+    res = make_response(jsonify({"message": "JSON recived"}), 200)
     reset_item = db_queries.reset_alert_count_for_item(user_id, item_id)
     logger.debug(f'Reset is: {reset_item}')
 
     if reset_item:
-        return redirect(url_for('view_items'))
+        return res
 
     return jsonify(items=['Error']), 401
 
