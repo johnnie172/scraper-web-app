@@ -9,3 +9,4 @@ celery
 Flask
 Flask-WTF
 retrying
+flask-cors

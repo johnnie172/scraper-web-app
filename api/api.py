@@ -4,6 +4,7 @@ import inspect
 from functools import wraps
 from flask import Flask, jsonify, request, render_template, make_response, redirect, url_for, flash
 from flask import g as flask_g
+from flask_cors import CORS, cross_origin
 import logging
 import psycopg2
 
@@ -23,6 +24,8 @@ db_queries = db_connection.get_db_queries()
 app = Flask(__name__)
 #todo CHANGE secret key!!
 app.secret_key = 'To Change this'
+CORS(app, support_credentials=True)
+#todo Change cors!
 user_utilities = UserUtilities(db_queries)
 
 
@@ -89,6 +92,7 @@ def logout():
 
 @app.route('/api/items', methods=['GET'])
 @require_user
+@cross_origin(supports_credentials=True)
 def get_items():
     user_id = flask_g.user_id
     logger.debug(f'user id: {user_id}')
