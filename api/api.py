@@ -64,19 +64,20 @@ def signup():
     logger.debug(f'User exists')
     return jsonify(data=['Error']), 401
 
-
 @app.route('/sign-in', methods=['POST'])
+@cross_origin(supports_credentials=True)
 def signin():
-    email = request.form.get("email")
-    password = request.form.get("password")
+    req = request.get_json()
+    email = req.get("email")
+    password = req.get("password")
     user_id_and_email = user_utilities.user_login(email, password)
 
     if user_id_and_email:
         user_id = user_id_and_email[0]
-        response = make_response(redirect(url_for('view_items')))
-        response.set_cookie('user_id', f'{user_id}')
+        # response = make_response(redirect(url_for('view_items')))
+        # response.set_cookie('user_id', f'{user_id}')
         logger.debug(f'User ID: {user_id}')
-        return response
+        return jsonify(user_id), 200
 
     logger.debug(f'Wrong password')
     return jsonify(items=['Error']), 401
@@ -84,6 +85,7 @@ def signin():
 
 @app.route('/log-out', methods=['GET', 'POST'])
 @require_user
+@cross_origin(supports_credentials=True)
 def logout():
     response = make_response(redirect(url_for('index')))
     response.set_cookie('user_id', max_age=0)
